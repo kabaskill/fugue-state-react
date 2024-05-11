@@ -13,7 +13,7 @@ const CardContainer = ({ cards }) => {
           </button>
         </div>
 
-        <ul className="relative w-3/5 flex justify-center p-4 gap-2 bg-slate-800">
+        <ul className="relative w-3/5 flex justify-center p-4 gap-2 bg-slate-700">
           {cards.map((card) => (
             <Card key={card.id} card={card} />
           ))}

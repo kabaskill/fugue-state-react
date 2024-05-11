@@ -17,13 +17,21 @@ const Card = ({ card, idSuffix = "" }) => {
   const cardNote = "L:1/4\n" + card.value;
   const noteId = "card-note" + card.id + card.value + idSuffix;
 
+  function handlePlaySound() {
+    window.Tone.start();
+    const synth = new window.Tone.Synth().toDestination();
+    const playValue = card.value + "4";
+    synth.triggerAttackRelease(playValue, "8n");
+  }
+
   return (
     <button
       ref={setNodeRef}
       style={style}
       {...attributes}
       {...listeners}
-      className="relative p-2 cursor-pointer w-[20dvh] h-[25dvh] bg-card-bg bg-contain flex flex-col items-center justify-around hover:scale-105 "
+      className="relative p-2 cursor-pointer w-[10dvw] h-[25dvh] bg-slate-50 flex flex-col items-center justify-around  "
+      onMouseDown={() => handlePlaySound()}
     >
       <div className=" w-1/2 h-1/3 ">
         <SheetMusic id={noteId} notation={cardNote} />

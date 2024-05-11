@@ -1,11 +1,13 @@
 import { closestCenter, DndContext, DragOverlay } from "@dnd-kit/core";
 import { arrayMove, horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
+import { useState, useEffect } from "react";
 import Card from "./Card";
 import Deck from "./Deck";
 import CardContainer from "./CardContainer";
 import DroppableArea from "./DroppableArea";
-import { useState, useEffect } from "react";
 import SheetMusic from "./SheetMusic";
+
+import { AbcNotation } from "tonal";
 
 export default function GameManager() {
   const initialDeck = [
@@ -28,7 +30,13 @@ export default function GameManager() {
   const [deck, setDeck] = useState(initialDeck);
   const [containerCards, setContainerCards] = useState([]);
 
-  const [noteString, setNoteString] = useState("X:1\nT:Core Gameplay\nK:C\nM:4/4\nL:1/4\nC");
+  const sciNoteString = ["C4", "D4", "E4"]
+    .map((note) => AbcNotation.scientificToAbcNotation(note))
+    .join("");
+
+  const [noteString, setNoteString] = useState(
+    `X:1\nT:Core Gameplay\nK:C\nM:4/4\nL:1/4\n${sciNoteString}`
+  );
 
   const [activeId, setActiveId] = useState(null);
   const activeCard = containerCards.find((card) => card.id === activeId);
@@ -106,6 +114,7 @@ export default function GameManager() {
           </DragOverlay>
 
           <Deck cards={deck} />
+        
         </div>
       </DndContext>
     </>
