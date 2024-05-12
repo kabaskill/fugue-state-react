@@ -1,11 +1,12 @@
-import GameManager from "./components/GameManager";
+import ChromaFlower from "./components/ChromaFlower";
+// import GameManager from "./components/GameManager";
 
 function App() {
   return (
     <main className={"flex flex-col items-center justify-between mx-auto"}>
       <h1 className="text-4xl font-bold p-8 text-slate-500">Fugue State</h1>
-
-      <GameManager />
+      <ChromaFlower />
+      {/* <GameManager /> */}
     </main>
   );
 }

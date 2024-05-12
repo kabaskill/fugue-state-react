@@ -8,6 +8,8 @@ import DroppableArea from "./DroppableArea";
 import SheetMusic from "./SheetMusic";
 
 import { AbcNotation } from "tonal";
+import { usePiano } from "../utils/usePiano";
+
 
 export default function GameManager() {
   const initialDeck = [
@@ -37,6 +39,7 @@ export default function GameManager() {
   const [noteString, setNoteString] = useState(
     `X:1\nT:Core Gameplay\nK:C\nM:4/4\nL:1/4\n${sciNoteString}`
   );
+  const { pianoOnce } = usePiano();
 
   const [activeId, setActiveId] = useState(null);
   const activeCard = containerCards.find((card) => card.id === activeId);
@@ -114,7 +117,10 @@ export default function GameManager() {
           </DragOverlay>
 
           <Deck cards={deck} />
-        
+          <button className="bg-slate-400" onClick={() => pianoOnce()}>
+            piano test
+          </button>
+
         </div>
       </DndContext>
     </>
