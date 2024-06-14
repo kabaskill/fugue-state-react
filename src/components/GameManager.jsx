@@ -6,10 +6,11 @@ import Deck from "./Deck";
 import CardContainer from "./CardContainer";
 import DroppableArea from "./DroppableArea";
 import SheetMusic from "./SheetMusic";
+import ChromaFlower from "./ChromaFlower";
 
 import { AbcNotation } from "tonal";
-import { usePiano } from "../utils/usePiano";
 
+import { motion } from "framer-motion";
 
 export default function GameManager() {
   const initialDeck = [
@@ -32,17 +33,14 @@ export default function GameManager() {
   const [deck, setDeck] = useState(initialDeck);
   const [containerCards, setContainerCards] = useState([]);
 
-  const sciNoteString = ["C4", "D4", "E4"]
-    .map((note) => AbcNotation.scientificToAbcNotation(note))
-    .join("");
+  const [activeId, setActiveId] = useState(null);
+  const activeCard = containerCards.find((card) => card.id === activeId);
+
+  const sciNoteString = ["C4"].map((note) => AbcNotation.scientificToAbcNotation(note)).join("");
 
   const [noteString, setNoteString] = useState(
     `X:1\nT:Core Gameplay\nK:C\nM:4/4\nL:1/4\n${sciNoteString}`
   );
-  const { pianoOnce } = usePiano();
-
-  const [activeId, setActiveId] = useState(null);
-  const activeCard = containerCards.find((card) => card.id === activeId);
 
   useEffect(() => {
     const numberOfCards = 5;
@@ -101,12 +99,16 @@ export default function GameManager() {
         onDragStart={({ active }) => setActiveId(active.id)}
         onDragEnd={handleDragEnd}
       >
-        <div className="w-3/5 bg-slate-200 flex justify-center">
+        <div className=" bg-slate-200 text-black flex justify-center mt-8">
           <SheetMusic id="core-gameplay" notation={noteString} />
         </div>
 
-        <div className="flex items-center justify-center p-4">
-          <DroppableArea />
+        <div className="flex items-center justify-center p-4 gap-4">
+          <div className="">
+            <ChromaFlower />
+          </div>
+
+          <DroppableArea></DroppableArea>
 
           <SortableContext items={containerCards} strategy={horizontalListSortingStrategy}>
             <CardContainer cards={containerCards} />
@@ -117,10 +119,15 @@ export default function GameManager() {
           </DragOverlay>
 
           <Deck cards={deck} />
-          <button className="bg-slate-400" onClick={() => pianoOnce()}>
-            piano test
-          </button>
-
+          <motion.div
+            className="bg-red-300 p-4"
+            whileHover={{ scale: 1.2 }}
+            whileTap={{ scale: 1.1 }}
+            drag="x"
+            dragConstraints={{ left: -100, right: 100 }}
+          >
+            TestMotion
+          </motion.div>
         </div>
       </DndContext>
     </>
