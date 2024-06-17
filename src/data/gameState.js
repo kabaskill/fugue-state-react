@@ -1,18 +1,23 @@
 import { signal } from "@preact/signals-react";
 
-export const defaultGameState = {
+const defaultGameState = {
   isMainMenu: true,
   isPlaying: false,
   isCutscene: false,
-  options: {
-    volume: 1,
-    mute: false,
-  },
+
   currentScene: "mainMenu",
   currentLevel: 0,
 };
 
-export const defaultPlayerState = {
+const defaultOptionsState = {
+  isActive: false,
+  volume: 100,
+  mute: "false",
+  notation: "scientific",
+  rootNote: "A",
+};
+
+const defaultPlayerState = {
   deck: [],
   hand: [],
   discard: [],
@@ -30,3 +35,4 @@ export const defaultPlayerState = {
 
 export const gameState = signal(defaultGameState);
 export const playerState = signal(defaultPlayerState);
+export const optionsState = signal(defaultOptionsState);

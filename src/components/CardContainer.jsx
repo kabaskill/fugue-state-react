@@ -3,7 +3,7 @@ import Card from "./Card";
 const CardContainer = ({ cards }) => {
   return (
     <>
-      <div className="fixed bottom-0 flex justify-center w-full h-[35dvh] max-h-[40dvh]">
+      <div className="fixed bottom-0 flex justify-center w-full h-[30dvh] max-h-[30dvh]">
         <div className="bg-slate-600 w-1/5 flex flex-col justify-center items-center gap-2">
           <p className="text-white font-bold text-2xl">Energy:5</p>
         </div>

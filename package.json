@@ -20,6 +20,7 @@
     "tone": "^14.9.17"
   },
   "devDependencies": {
+    "@preact/signals-react-transform": "^0.3.1",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@vitejs/plugin-react": "^4.2.1",

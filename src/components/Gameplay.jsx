@@ -11,8 +11,9 @@ import ChromaFlower from "./ChromaFlower";
 import { AbcNotation } from "tonal";
 
 import { motion } from "framer-motion";
+import { gameState, optionsState } from "../data/gameState";
 
-export default function GameManager() {
+export default function Gameplay() {
   const initialDeck = [
     { name: "Card1", id: "0001", value: "C" },
     { name: "Card2", id: "0002", value: "D" },
@@ -120,14 +121,20 @@ export default function GameManager() {
 
           <Deck cards={deck} />
           <motion.div
-            className="bg-red-300 p-4"
+            className="bg-blue-400 p-4 cursor-pointer"
             whileHover={{ scale: 1.2 }}
             whileTap={{ scale: 1.1 }}
             drag="x"
             dragConstraints={{ left: -100, right: 100 }}
+            onClick={() => {
+              gameState.value = { ...gameState.value, isPlaying: false };
+            }}
           >
-            TestMotion
+            To Main Menu
           </motion.div>
+          <button onClick={() => (optionsState.value = { ...optionsState.value, isActive: true })}>
+            Options
+          </button>
         </div>
       </DndContext>
     </>
