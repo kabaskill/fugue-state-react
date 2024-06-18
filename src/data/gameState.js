@@ -1,11 +1,8 @@
 import { signal } from "@preact/signals-react";
+import randomId from "../utils/randomId";
 
 const defaultGameState = {
-  isMainMenu: true,
-  isPlaying: false,
-  isCutscene: false,
-
-  currentScene: "mainMenu",
+  currentScene: "main-menu",
   currentLevel: 0,
 };
 
@@ -17,20 +14,32 @@ const defaultOptionsState = {
   rootNote: "A",
 };
 
+const noteCards = () => {
+  const array = [];
+
+  for (let i = 0; i < 12; i++) {
+    array.push({
+      unlocked: true,
+      isPowerup: false,
+      name: "Card",
+      id: randomId(),
+      value: i,
+      description: "A card",
+      image: "",
+    });
+  }
+
+  return array;
+};
+
 const defaultPlayerState = {
-  deck: [],
+  deck: noteCards(),
   hand: [],
-  discard: [],
-  drawPile: [],
-  discardPile: [],
-  energy: 3,
-  totalEnergySpent: 0,
   handSize: 5,
-  maxHandSize: 5,
-  maxDeckSize: 30,
-  maxDiscardSize: 30,
-  maxDrawPileSize: 30,
-  maxDiscardPileSize: 30,
+  discard: [],
+  energy: 3,
+  maxEnergy: 3,
+  totalEnergySpent: 0,
 };
 
 export const gameState = signal(defaultGameState);

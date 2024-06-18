@@ -1,17 +1,18 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-import * as Tone from "tone";
 import { AbcNotation } from "tonal";
 
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { usePiano } from "./PianoProvider";
 
-const Card = ({ card }) => {
+export default function Card({ card }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: card.id,
   });
 
+  const { pianoOnce } = usePiano();
   const [isSelected, setIsSelected] = useState(false);
 
   const style = {
@@ -22,33 +23,31 @@ const Card = ({ card }) => {
     height: "100%",
   };
 
-  function handlePlaySound() {
-    Tone.start();
-    const synth = new Tone.Synth().toDestination();
-    const playValue = card.value + "4";
-    synth.triggerAttackRelease(playValue, "8n");
-  }
+  const cardNote = AbcNotation.abcToScientificNotation(card.value);
+
+  const handlePlaySound = async (note) => {
+    pianoOnce(note, "4n");
+  };
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <motion.button
-        ref={setNodeRef}
         animate={{ y: isSelected ? -25 : 0 }}
         whileHover={{ scale: 1.05 }}
-        className="h-full relative p-2 cursor-pointer grid grid-rows-8 items-center  "
+        className="h-full relative p-2 cursor-pointer grid grid-rows-8 items-center"
         onPointerDown={() => {
           setIsSelected(!isSelected);
-          handlePlaySound();
+          handlePlaySound(cardNote);
         }}
       >
-        <svg className="w-1/5 h-1/5 absolute top-0 right-0">
+        <svg className="w-1/5 h-1/5 absolute top-0 right-2">
           <circle cx="50%" cy="50%" r="35%" fill="blue" />
           <text
             x="50%"
             y="50%"
             fill="white"
             fontFamily="monospace"
-            fontSize="1.7rem"
+            fontSize="1.4rem"
             fontWeight="bold"
             textAnchor="middle"
             dominantBaseline="middle"
@@ -57,7 +56,7 @@ const Card = ({ card }) => {
           </text>
         </svg>
 
-        <svg className='row-span-5 w-full'>
+        <svg className="row-span-5 w-full">
           <circle cx="50%" cy="50%" r="35%" fill={`hsl(${(4 * 360) / 12}, 80%, 50%)`} />
           <text
             x="50%"
@@ -69,14 +68,12 @@ const Card = ({ card }) => {
             textAnchor="middle"
             dominantBaseline="middle"
           >
-            {AbcNotation.abcToScientificNotation(card.value)}
+            {cardNote}
           </text>
         </svg>
 
-        <p className="row-span-3 ">Adds a quarter note</p>
+        <p className="row-span-3">Adds a quarter note</p>
       </motion.button>
     </div>
   );
-};
-
-export default Card;
+}

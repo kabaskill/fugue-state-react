@@ -11,7 +11,7 @@ import ChromaFlower from "./ChromaFlower";
 import { AbcNotation } from "tonal";
 
 import { motion } from "framer-motion";
-import { gameState, optionsState } from "../data/gameState";
+import { gameState, optionsState, playerState } from "../data/gameState";
 
 export default function Gameplay() {
   const initialDeck = [
@@ -44,7 +44,7 @@ export default function Gameplay() {
   );
 
   useEffect(() => {
-    const numberOfCards = 5;
+    const numberOfCards = 6;
     const initialContainerCards = [];
     const newDeck = [...deck];
 
@@ -83,6 +83,7 @@ export default function Gameplay() {
 
         setDeck([...deck, draggedCard]);
         setContainerCards([...containerCards, firstCardOnDeck]);
+        playerState.value = { ...playerState.value, energy: playerState.value.energy - 1 };
       }
     } else {
       setContainerCards((cards) => {
@@ -127,7 +128,7 @@ export default function Gameplay() {
             drag="x"
             dragConstraints={{ left: -100, right: 100 }}
             onClick={() => {
-              gameState.value = { ...gameState.value, isPlaying: false };
+              gameState.value = { ...gameState.value, currentScene: "main-menu" };
             }}
           >
             To Main Menu
