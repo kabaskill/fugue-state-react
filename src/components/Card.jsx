@@ -7,9 +7,9 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { usePiano } from "./PianoProvider";
 
-export default function Card({ card }) {
+export default function Card({ card, idSuffix = ""}) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-    id: card.id,
+    id: card.id + idSuffix,
   });
 
   const { pianoOnce } = usePiano();
@@ -20,7 +20,6 @@ export default function Card({ card }) {
     transform: CSS.Transform.toString(transform),
     zIndex: isDragging ? 1000 : undefined,
     opacity: isDragging ? 0.25 : undefined,
-    height: "100%",
   };
 
   const cardNote = AbcNotation.abcToScientificNotation(card.value);
@@ -34,7 +33,7 @@ export default function Card({ card }) {
       <motion.button
         animate={{ y: isSelected ? -25 : 0 }}
         whileHover={{ scale: 1.05 }}
-        className="h-full relative p-2 cursor-pointer grid grid-rows-8 items-center"
+        className=" relative aspect-[8/11] h-full  p-2  cursor-pointer grid grid-rows-8 items-center"
         onPointerDown={() => {
           setIsSelected(!isSelected);
           handlePlaySound(cardNote);
@@ -56,7 +55,7 @@ export default function Card({ card }) {
           </text>
         </svg>
 
-        <svg className="row-span-5 w-full">
+        <svg className="row-span-5 w-[100%]">
           <circle cx="50%" cy="50%" r="35%" fill={`hsl(${(4 * 360) / 12}, 80%, 50%)`} />
           <text
             x="50%"

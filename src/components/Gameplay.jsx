@@ -1,10 +1,17 @@
-import { closestCenter, DndContext, DragOverlay } from "@dnd-kit/core";
+import {
+  closestCenter,
+  DndContext,
+  DragOverlay,
+  // PointerSensor,
+  // useSensor,
+  // useSensors,
+} from "@dnd-kit/core";
 import { arrayMove, horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { useState, useEffect } from "react";
+
 import Card from "./Card";
 import Deck from "./Deck";
 import CardContainer from "./CardContainer";
-import DroppableArea from "./DroppableArea";
 import SheetMusic from "./SheetMusic";
 import ChromaFlower from "./ChromaFlower";
 
@@ -43,8 +50,17 @@ export default function Gameplay() {
     `X:1\nT:Core Gameplay\nK:C\nM:4/4\nL:1/4\n${sciNoteString}`
   );
 
+  // const sensors = useSensors(
+  //   useSensor(PointerSensor, {
+  //     activationConstraint: {
+  //       delay: 200,
+  //       distance: 10,
+  //     },
+  //   })
+  // );
+
   useEffect(() => {
-    const numberOfCards = 6;
+    const numberOfCards = 5;
     const initialContainerCards = [];
     const newDeck = [...deck];
 
@@ -97,46 +113,54 @@ export default function Gameplay() {
   return (
     <>
       <DndContext
+        // sensors={sensors}
         collisionDetection={closestCenter}
         onDragStart={({ active }) => setActiveId(active.id)}
         onDragEnd={handleDragEnd}
       >
-        <div className=" bg-slate-200 text-black flex justify-center mt-8">
-          <SheetMusic id="core-gameplay" notation={noteString} />
-        </div>
+        <div className="grid grid-cols-6 grid-rows-3 size-full">
+          <div className="flex-grow flex  row-span-2 col-span-6">
+            <div className="flex flex-grow items-center justify-center p-4 ">
+              <ChromaFlower />
+            </div>
 
-        <div className="flex items-center justify-center p-4 gap-4">
-          <div className="">
-            <ChromaFlower />
+            <div className=" flex flex-grow flex-col items-center justify-center gap-4 p-4 bg-green-500 ">
+              <div className=" bg-white text-black flex justify-center ">
+                <SheetMusic id="core-gameplay" notation={noteString} />
+              </div>
+            </div>
+
+            <div className="  flex flex-grow flex-col  p-4 bg-blue-500 gap-4 ">
+              <div className="flex justify-end gap-2">
+                <button
+                  onClick={() => (optionsState.value = { ...optionsState.value, isActive: true })}
+                >
+                  Options
+                </button>
+                <motion.button
+                  whileHover={{ scale: 1.2 }}
+                  whileTap={{ scale: 1.1 }}
+                  onClick={() => {
+                    gameState.value = { ...gameState.value, currentScene: "main-menu" };
+                  }}
+                >
+                  Main Menu
+                </motion.button>
+              </div>
+              <Deck cards={deck} />
+            </div>
           </div>
 
-          <DroppableArea></DroppableArea>
-
           <SortableContext items={containerCards} strategy={horizontalListSortingStrategy}>
-            <CardContainer cards={containerCards} />
+            <div className="bg-slate-600 row-span-1 col-span-6 flex items-center justify-around ">
+              <CardContainer cards={containerCards} />
+            </div>
           </SortableContext>
-
-          <DragOverlay>
-            {activeCard ? <Card card={activeCard} idSuffix="-clone" /> : null}
-          </DragOverlay>
-
-          <Deck cards={deck} />
-          <motion.div
-            className="bg-blue-400 p-4 cursor-pointer"
-            whileHover={{ scale: 1.2 }}
-            whileTap={{ scale: 1.1 }}
-            drag="x"
-            dragConstraints={{ left: -100, right: 100 }}
-            onClick={() => {
-              gameState.value = { ...gameState.value, currentScene: "main-menu" };
-            }}
-          >
-            To Main Menu
-          </motion.div>
-          <button onClick={() => (optionsState.value = { ...optionsState.value, isActive: true })}>
-            Options
-          </button>
         </div>
+
+        <DragOverlay>
+          {activeCard ? <Card card={activeCard} idSuffix="-clone" /> : null}
+        </DragOverlay>
       </DndContext>
     </>
   );

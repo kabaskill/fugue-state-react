@@ -1,11 +1,12 @@
 import { useState } from "react";
+import { optionsState } from "../data/gameState";
 import randomId from "../utils/randomId";
 
 export default function ChromaFlower() {
   const size = 400;
   const pad = 80;
 
-  const notes = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"];
+  const notes = optionsState.value.allNotes;
 
   const svgCenterX = size / 2;
   const svgCenterY = size / 2;
@@ -26,17 +27,15 @@ export default function ChromaFlower() {
   const [linePoints, setLinePoints] = useState([]);
   const [lineColor, setLineColor] = useState("#000");
 
-  const getColorForNote = (index) => `hsl(${(index * 360) / 12}, 80%, 50%)`;
-
   function handlePetalClick(index) {
-    console.log(notes[index]);
+
     const angle = (index * 2 * Math.PI) / 12 - Math.PI / 2;
     const point = {
       x: (size / 2 + pad / 6 - pad) * Math.cos(angle),
       y: (size / 2 + pad / 6 - pad) * Math.sin(angle),
     };
 
-    setLineColor(getColorForNote(index));
+    setLineColor("#555");
 
     setLinePoints((prevPoints) => {
       const existingPoint = prevPoints.find((p) => p.x === point.x && p.y === point.y);
@@ -57,7 +56,7 @@ export default function ChromaFlower() {
       dominantBaseline="middle"
     >
       <g transform={`translate(${svgCenterX}, ${svgCenterY}) `}>
-        {notes.map((note, index) => {
+        {Object.keys(notes).map((note, index) => {
           return (
             <g
               key={randomId("chroma-petals")}
@@ -72,7 +71,7 @@ export default function ChromaFlower() {
                 />
               </g>
               <g transform={`rotate(${index * 30}) translate(0, -${size / 2 + pad / 6}) `}>
-                <circle cx="0" cy="0" r={size / 10} fill={`hsl(${(index * 360) / 12}, 80%, 50%)`} />
+                <circle cx="0" cy="0" r={size / 10} fill={notes[note]} />
                 <text
                   x="0"
                   y="0"
@@ -84,14 +83,9 @@ export default function ChromaFlower() {
                   dominantBaseline="middle"
                   transform={`rotate(${index * -30})`}
                 >
-                  {note}
+                  {optionsState.value.notation === "chromatic" ? index : note}
                 </text>
-                <circle
-                  cx="0"
-                  cy={pad}
-                  r={size / 40}
-                  fill={`hsl(${(index * 360) / 12}, 80%, 50%)`}
-                />
+                <circle cx="0" cy={pad} r={size / 40} fill={notes[note]} />
               </g>
             </g>
           );

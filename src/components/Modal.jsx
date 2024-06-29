@@ -18,7 +18,7 @@ const modalVariants = {
   },
 };
 
-const Modal = ({ showModal, closeModal, children }) => {
+const Modal = ({ showModal, closeModal, showXButton = true, children }) => {
   return (
     <>
       {showModal && (
@@ -31,9 +31,11 @@ const Modal = ({ showModal, closeModal, children }) => {
         >
           <motion.div className="modal" variants={modalVariants} initial="hidden" animate="visible">
             {children}
-            <button className="absolute top-4 right-4" onClick={closeModal}>
-              X
-            </button>
+            {showXButton && (
+              <button className="absolute top-4 right-4" onClick={closeModal}>
+                X
+              </button>
+            )}
           </motion.div>
         </motion.div>
       )}

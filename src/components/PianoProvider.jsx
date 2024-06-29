@@ -43,7 +43,7 @@ export const PianoProvider = ({ children }) => {
           C8: "C8.mp3",
         },
         release: 0.5,
-        volume: 1,
+        volume: 0,
         baseUrl: "/audio/piano/",
         onload: () => console.log("Sampler loaded"),
       }).toDestination();

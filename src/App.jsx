@@ -1,76 +1,73 @@
+import React, { useState, Suspense } from "react";
 import { useSignals } from "@preact/signals-react/runtime";
 import { AnimatePresence, motion } from "framer-motion";
 
-// STATE DATA
+import { PianoProvider } from "./components/PianoProvider";
+import Options from "./components/Options";
+import MainMenu from "./components/MainMenu";
+import MidiPlayer from "./components/MidiPlayer";
+import Modal from "./components/Modal";
+import Cutscene from "./components/Cutscene";
+
 import { gameState, optionsState } from "./data/gameState";
 
-// COMPONENTS
-import Gameplay from "./components/Gameplay";
-import Options from "./components/Options";
-
-import { PianoProvider } from "./components/PianoProvider";
-import * as Tone from "tone";
-import MidiPlayer from "./components/MidiPlayer";
-import { useState } from "react";
+const Gameplay = React.lazy(() => import("./components/Gameplay"));
 
 export default function App() {
   useSignals();
 
-  const [playMusic, setPlayMusic] = useState(false);
+  const [isPianoProviderLoaded, setIsPianoProviderLoaded] = useState(false);
+  const [showModal, setShowModal] = useState(true);
+
+  const handleLoadPianoProvider = () => {
+    setIsPianoProviderLoaded(true);
+    setShowModal(false);
+  };
 
   return (
-    <PianoProvider>
-      <main className="flex flex-col items-center justify-center mx-auto h-full">
-        <AnimatePresence>
-          <Options />
-        </AnimatePresence>
+    <>
+      <Modal showModal={showModal} closeModal={() => setShowModal(false)} showXButton={false}>
+        <div className="h-full flex flex-col items-center justify-around gap-8 p-12">
+          <p className=" text-center ">
+            Audio Engine needs to be loaded manually before you can start playing. Please click the
+            button below to load the Audio Engine.
+          </p>
+          <p>
+            Optimized for landscape resolutions. If you are using mobile devices, please rotate your
+            device.
+          </p>
+          <button onClick={handleLoadPianoProvider}>Start Audio Engine</button>
+        </div>
+      </Modal>
 
-        {gameState.value.currentScene === "main-menu" && (
-          <section className="flex flex-col justify-around items-center gap-8">
-            <h1>Fugue State</h1>
-            <button
-              onClick={() => {
-                gameState.value = { ...gameState.value, currentScene: "gameplay" };
-              }}
-            >
-              Play
-            </button>
-            <button
-              onClick={() => (optionsState.value = { ...optionsState.value, isActive: true })}
-            >
-              Options
-            </button>
+      {isPianoProviderLoaded && (
+        <PianoProvider>
+          <main className=" flex flex-col items-center h-full w-full mx-auto">
+            <AnimatePresence>
+              <Options />
+            </AnimatePresence>
 
-            <button
-              onClick={() => {
-                const synth = new Tone.Synth().toDestination();
-                synth.triggerAttackRelease("C4", "8n");
-              }}
-            >
-              Start Audio
-            </button>
-            <button
-              onClick={() => {
-                setPlayMusic(true);
-              }}
-            >
-              Start Music
-            </button>
-            {playMusic && <MidiPlayer />}
-          </section>
-        )}
+            {optionsState.value.isMusicPlaying && <MidiPlayer />}
 
-        {gameState.value.currentScene === "gameplay" && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="h-full"
-          >
-            <Gameplay />
-          </motion.div>
-        )}
-      </main>
-    </PianoProvider>
+            {gameState.value.currentScene === "main-menu" && <MainMenu />}
+
+            {gameState.value.currentScene === "cutscene" && <Cutscene />}
+
+            {gameState.value.currentScene === "gameplay" && (
+              <Suspense fallback={<div className="m-auto text-6xl">Loading...</div>}>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="flex flex-col w-full h-full"
+                >
+                  <Gameplay />
+                </motion.div>
+              </Suspense>
+            )}
+          </main>
+        </PianoProvider>
+      )}
+    </>
   );
 }

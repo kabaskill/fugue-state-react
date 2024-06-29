@@ -1,6 +1,6 @@
 const Deck = ({ cards }) => {
   return (
-    <div className="w-[200px] border-black border-2 ">
+    <div className=" border-black border-2 ">
       <p className="text-center">Deck: {cards.length}</p>
 
       <ul className="flex flex-col">

@@ -1,6 +1,7 @@
 import Modal from "./Modal";
 
 import { optionsState } from "../data/gameState";
+import randomId from "../utils/randomId";
 
 export default function Options() {
   return (
@@ -53,18 +54,13 @@ export default function Options() {
                     (optionsState.value = { ...optionsState.value, rootNote: event.target.value })
                   }
                 >
-                  <option value="A">A</option>
-                  <option value="A#">A#</option>
-                  <option value="B">B</option>
-                  <option value="C">C</option>
-                  <option value="C#">C#</option>
-                  <option value="D">D</option>
-                  <option value="D#">D#</option>
-                  <option value="E">E</option>
-                  <option value="F">F</option>
-                  <option value="F#">F#</option>
-                  <option value="G">G</option>
-                  <option value="G#">G#</option>
+                  {Object.keys(optionsState.value.allNotes).map((note) => {
+                    return (
+                      <option key={randomId("option")} value={note}>
+                        {note}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
 
@@ -80,7 +76,8 @@ export default function Options() {
                 >
                   <option value="scientific">Scientific</option>
                   <option value="chromatic">Chromatic</option>
-                  <option value="abc">ABC Notation</option>
+                  {/* <option value="abc">ABC Notation</option>
+                  <option value="standart">Do-Re-Mi Notation</option> */}
                 </select>
               </div>
             </div>
