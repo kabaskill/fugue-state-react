@@ -1,19 +1,15 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-import { AbcNotation } from "tonal";
-
 import { motion } from "framer-motion";
-import { useState } from "react";
 import { usePiano } from "./PianoProvider";
 
-export default function Card({ card, idSuffix = ""}) {
+export default function Card({ card, idSuffix = "", isSelected, onSelect }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: card.id + idSuffix,
   });
 
   const { pianoOnce } = usePiano();
-  const [isSelected, setIsSelected] = useState(false);
 
   const style = {
     transition,
@@ -22,7 +18,12 @@ export default function Card({ card, idSuffix = ""}) {
     opacity: isDragging ? 0.25 : undefined,
   };
 
-  const cardNote = AbcNotation.abcToScientificNotation(card.value);
+  const handleCardClick = () => {
+    if (!isDragging) {
+      onSelect();
+      handlePlaySound(card.note + card.octave);
+    }
+  };
 
   const handlePlaySound = async (note) => {
     pianoOnce(note, "4n");
@@ -33,11 +34,8 @@ export default function Card({ card, idSuffix = ""}) {
       <motion.button
         animate={{ y: isSelected ? -25 : 0 }}
         whileHover={{ scale: 1.05 }}
-        className=" relative aspect-[8/11] h-full  p-2  cursor-pointer grid grid-rows-8 items-center"
-        onPointerDown={() => {
-          setIsSelected(!isSelected);
-          handlePlaySound(cardNote);
-        }}
+        className="relative aspect-[8/11] h-full p-2 cursor-pointer grid grid-rows-8 items-center"
+        onClick={handleCardClick}
       >
         <svg className="w-1/5 h-1/5 absolute top-0 right-2">
           <circle cx="50%" cy="50%" r="35%" fill="blue" />
@@ -51,12 +49,12 @@ export default function Card({ card, idSuffix = ""}) {
             textAnchor="middle"
             dominantBaseline="middle"
           >
-            1
+            {card.cost}
           </text>
         </svg>
 
         <svg className="row-span-5 w-[100%]">
-          <circle cx="50%" cy="50%" r="35%" fill={`hsl(${(4 * 360) / 12}, 80%, 50%)`} />
+          <circle cx="50%" cy="50%" r="35%" fill={card.color} />
           <text
             x="50%"
             y="50%"
@@ -67,7 +65,8 @@ export default function Card({ card, idSuffix = ""}) {
             textAnchor="middle"
             dominantBaseline="middle"
           >
-            {cardNote}
+            {card.note}
+            {card.octave}
           </text>
         </svg>
 

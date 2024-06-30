@@ -51,6 +51,11 @@ button:hover {
   background-color: #b86cff;
 }
 
+button:disabled {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
+}
+
 .backdrop {
   position: fixed;
   top: 0;
