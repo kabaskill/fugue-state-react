@@ -24,7 +24,7 @@ export default function Cutscene(isCutscene = gameState.value.currentScene === "
       </h1>
 
       <img
-        src={`/placeholders/${scene.dialog[dialogIndex].character}.png`}
+        src={`${import.meta.env.BASE_URL}placeholders/${scene.dialog[dialogIndex].character}.png`}
         alt="characters"
         className={`absolute top-0 h-2/3 ${
           scene.dialog[dialogIndex].character === "Player" ? "left-0" : "right-0 scale-x-[-1]"
