@@ -1,25 +1,30 @@
-const Deck = ({ cards }) => {
+import Modal from "./Modal";
+import Card from "./Card";
 
+export default function Deck({ cards, showModal, closeModal }) {
   if (!cards || !cards.length) {
     return <div>Loading deck...</div>;
   }
-  
-  return (
-    <div className=" border-black border-2 ">
-      <p className="text-center">Deck: {cards.length}</p>
 
-      <ul className="flex flex-wrap gap-4">
+  return (
+    <Modal showModal={showModal} closeModal={closeModal} showXButton={true}>
+      <h1 className=" absolute top-[-4rem] text-white">
+        DECK: <span className="italic">{cards.length}</span>
+      </h1>
+
+      <ul className="size-full grid  grid-cols-5 gap-4 p-6 overflow-auto">
         {cards.map((card) => {
           return (
-            <li key={card.id}>
-              {card.note}
-              {card.octave}
-            </li>
+            <Card
+              key={card.id}
+              card={card}
+              isSelected={false}
+              onSelect={() => console.log(card.note)}
+              onDeck={true}
+            />
           );
         })}
       </ul>
-    </div>
+    </Modal>
   );
-};
-
-export default Deck;
+}

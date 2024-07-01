@@ -3,9 +3,9 @@ import { useSignals } from "@preact/signals-react/runtime";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { PianoProvider } from "./components/PianoProvider";
+import MidiPlayer from "./components/MidiPlayer";
 import Options from "./components/Options";
 import MainMenu from "./components/MainMenu";
-import MidiPlayer from "./components/MidiPlayer";
 import Modal from "./components/Modal";
 import Cutscene from "./components/Cutscene";
 

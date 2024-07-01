@@ -32,7 +32,10 @@ const Modal = ({ showModal, closeModal, showXButton = true, children }) => {
           <motion.div className="modal" variants={modalVariants} initial="hidden" animate="visible">
             {children}
             {showXButton && (
-              <button className="absolute top-4 right-4" onClick={closeModal}>
+              <button
+                className="absolute top-[-3rem] right-[-3rem] rounded-full text-white "
+                onClick={closeModal}
+              >
                 X
               </button>
             )}

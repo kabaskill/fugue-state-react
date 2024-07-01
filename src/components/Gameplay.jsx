@@ -29,6 +29,8 @@ export default function Gameplay() {
     })
   );
 
+  const [isDeck, setIsDeck] = useState(false);
+
   const [noteString, setNoteString] = useState(`X:1\nT:Core Gameplay\nK:C\nM:4/4\nL:1/4\n${"dd"}`);
 
   function handleDragStart(event) {
@@ -104,19 +106,23 @@ export default function Gameplay() {
         onDragEnd={handleDragEnd}
       >
         <div className="grid grid-cols-6 grid-rows-3 size-full">
+          <Deck
+            cards={playerState.value.deck}
+            showModal={isDeck}
+            closeModal={() => setIsDeck(false)}
+          />
+
           <div className="flex-grow flex row-span-2 col-span-6">
             <div className="flex flex-grow items-center justify-center p-4 ">
               <ChromaFlower />
             </div>
 
-            <div className="flex flex-grow flex-col items-center justify-center gap-4 p-4 bg-green-500 ">
+            <div className="flex flex-grow flex-col items-center justify-center gap-4 p-4 bg-green-500 relative ">
               <div className="bg-white text-black flex justify-center ">
                 <SheetMusic id="core-gameplay" notation={noteString} />
               </div>
-            </div>
 
-            <div className="flex flex-grow flex-col p-4 bg-blue-500 gap-4 ">
-              <div className="flex justify-end gap-2">
+              <div className="flex justify-end gap-2 absolute top-4 right-4">
                 <button
                   onClick={() => (optionsState.value = { ...optionsState.value, isActive: true })}
                 >
@@ -132,17 +138,16 @@ export default function Gameplay() {
                   Main Menu
                 </motion.button>
               </div>
-              <Deck cards={playerState.value.deck} />
             </div>
           </div>
 
-          <SortableContext items={items.value} strategy={horizontalListSortingStrategy}>
-            <div className="bg-slate-600 row-span-1 col-span-6 flex items-center justify-around ">
-              <div className="flex flex-col justify-center items-center gap-2">
-                <p className="text-white font-bold text-2xl">Energy: {playerState.value.energy}</p>
-              </div>
+          <div className="bg-slate-600 row-span-1 col-span-6 flex ">
+            <div className="w-[10%] flex flex-col justify-center items-center gap-2 ">
+              <p className="text-white font-bold text-2xl">Energy: {playerState.value.energy}</p>
+            </div>
 
-              <ul className="max-w-[60%] h-full flex justify-center items-center p-4 gap-4 bg-slate-700">
+            <SortableContext items={items.value} strategy={horizontalListSortingStrategy}>
+              <ul className="w-[75%] h-full flex justify-center items-center p-4 gap-4 bg-slate-700">
                 {items.value.map((card) => (
                   <Card
                     key={card.id}
@@ -152,16 +157,24 @@ export default function Gameplay() {
                   />
                 ))}
               </ul>
-              <div className="flex flex-col justify-center items-center gap-2">
-                <button onClick={() => handleTurn("play")} disabled={selectedCards.size === 0}>
-                  Play
-                </button>
-                <button onClick={() => handleTurn("discard")} disabled={selectedCards.size === 0}>
-                  Discard
-                </button>
-              </div>
+            </SortableContext>
+
+            <div className="w-[20%] py-20 px-4 grid grid-cols-2 grid-rows-2 grid-flow-col  gap-4">
+              <button onClick={() => handleTurn("play")} disabled={selectedCards.size === 0}>
+                Play
+              </button>
+              <button onClick={() => handleTurn("discard")} disabled={selectedCards.size === 0}>
+                Discard
+              </button>
+              <button
+                className="self-center row-span-2 w-full aspect-[8/11]"
+                onClick={() => setIsDeck(true)}
+              >
+                Show <br />
+                Deck
+              </button>
             </div>
-          </SortableContext>
+          </div>
         </div>
 
         <DragOverlay>

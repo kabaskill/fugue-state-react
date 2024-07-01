@@ -36,12 +36,12 @@ const mappedNotes = (startKey) => {
 const coloredNotes = mappedNotes("A");
 
 const card = (note, octave, cost = 1, unlocked = true) => ({
-  id: randomId("card-" + note + octave),
+  id: randomId("card-"),
   unlocked,
   note,
   octave,
   color: coloredNotes[note],
-  description: `Plays the note ${note} on the piano.`,
+  description: `Plays the note `,
   cost,
   click: () => {
     console.log(`Card Played (${note}, ${octave})`);
@@ -49,7 +49,12 @@ const card = (note, octave, cost = 1, unlocked = true) => ({
 });
 
 const noteDeck = (allNotes) => {
-  return Object.keys(allNotes).map((note) => card(note, 4));
+  return Object.keys(allNotes).flatMap((note) => [
+    card(note, 4),
+    card(note, 5),
+    card(note, 4),
+    card(note, 5),
+  ]);
 };
 
 const drawHand = (deck, handSize) => {

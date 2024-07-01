@@ -17,6 +17,7 @@ export default function Card({ card, idSuffix = "", isSelected, onSelect }) {
   const { pianoOnce } = usePiano();
 
   const style = {
+    height: "100%",
     transition,
     transform: CSS.Transform.toString(transform),
     zIndex: isDragging ? 1000 : undefined,
@@ -35,36 +36,42 @@ export default function Card({ card, idSuffix = "", isSelected, onSelect }) {
       <motion.button
         animate={{ y: isSelected ? -25 : 0 }}
         whileHover={{ scale: 1.05 }}
-        className="relative aspect-[8/11] h-full p-2 cursor-pointer grid grid-rows-8 items-center"
+        className="relative aspect-[8/11] max-w-full max-h-full cursor-pointer pb-2"
         onClick={handleCardClick}
       >
-        <svg className="w-1/5 h-1/5 absolute top-0 right-2">
-          <circle cx="50%" cy="50%" r="35%" fill="blue" />
+        <svg
+          className="w-1/5 h-1/5 absolute top-0 right-2"
+          viewBox="0 0 15 15 "
+          textAnchor="middle"
+          dominantBaseline="middle"
+        >
+          <circle cx="50%" cy="50%" r="45%" fill="blue" />
           <text
             x="50%"
             y="50%"
             fill="white"
             fontFamily="monospace"
-            fontSize="1.4rem"
+            fontSize="0.8rem"
             fontWeight="bold"
-            textAnchor="middle"
-            dominantBaseline="middle"
           >
             {card.cost}
           </text>
         </svg>
 
-        <svg className="row-span-5 w-[100%]">
-          <circle cx="50%" cy="50%" r="35%" fill={card.color} />
+        <svg
+          className="h-3/5 w-full "
+          viewBox="0 0 40 40"
+          textAnchor="middle"
+          dominantBaseline="middle"
+        >
+          <circle cx="50%" cy="50%" r="40%" fill={card.color} />
           <text
             x="50%"
             y="50%"
             fill="white"
             fontFamily="monospace"
-            fontSize="2.5rem"
+            // fontSize="2.5rem"
             fontWeight="bold"
-            textAnchor="middle"
-            dominantBaseline="middle"
           >
             {optionsState.value.notation === "chromatic"
               ? chromaticIndex
@@ -72,7 +79,22 @@ export default function Card({ card, idSuffix = "", isSelected, onSelect }) {
           </text>
         </svg>
 
-        <p className="row-span-3">Adds a quarter note</p>
+        <div className="text-black bg-slate-100 rounded-md h-1/3 w-full text-balance flex justify-center items-center ">
+          <p>
+            {card.description}
+            <br />
+            <span
+              style={{
+                color: card.color,
+                fontWeight: "bold",
+                fontSize: "1.5rem",
+              }}
+            >
+              {card.note}
+              {card.octave}
+            </span>
+          </p>
+        </div>
       </motion.button>
     </div>
   );
