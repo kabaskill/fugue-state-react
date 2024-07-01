@@ -4,10 +4,23 @@ import { CSS } from "@dnd-kit/utilities";
 import { motion } from "framer-motion";
 import { usePiano } from "./PianoProvider";
 
+import { effect } from "@preact/signals-react";
+import { optionsState } from "../data/gameState";
+
 export default function Card({ card, idSuffix = "", isSelected, onSelect }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: card.id + idSuffix,
   });
+
+  // effect(() => {
+  //   const allNotes = optionsState.value.allNotes;
+  //   if (Array.isArray(allNotes)) {
+  //     const currIndex = allNotes.findIndex((note) => note === card.note);
+  //     if (currIndex !== -1) {
+  //       card.note = allNotes[currIndex];
+  //     }
+  //   }
+  // }, [optionsState.value.rootNote]);
 
   const { pianoOnce } = usePiano();
 
@@ -21,12 +34,8 @@ export default function Card({ card, idSuffix = "", isSelected, onSelect }) {
   const handleCardClick = () => {
     if (!isDragging) {
       onSelect();
-      handlePlaySound(card.note + card.octave);
+      pianoOnce(card.note + card.octave, "4n");
     }
-  };
-
-  const handlePlaySound = async (note) => {
-    pianoOnce(note, "4n");
   };
 
   return (
