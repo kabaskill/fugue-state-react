@@ -4,7 +4,6 @@ import { CSS } from "@dnd-kit/utilities";
 import { motion } from "framer-motion";
 import { usePiano } from "./PianoProvider";
 
-import { effect } from "@preact/signals-react";
 import { optionsState } from "../data/gameState";
 
 export default function Card({ card, idSuffix = "", isSelected, onSelect }) {
@@ -12,16 +11,9 @@ export default function Card({ card, idSuffix = "", isSelected, onSelect }) {
     id: card.id + idSuffix,
   });
 
-  // effect(() => {
-  //   const allNotes = optionsState.value.allNotes;
-  //   if (Array.isArray(allNotes)) {
-  //     const currIndex = allNotes.findIndex((note) => note === card.note);
-  //     if (currIndex !== -1) {
-  //       card.note = allNotes[currIndex];
-  //     }
-  //   }
-  // }, [optionsState.value.rootNote]);
-
+  const chromaticIndex = Object.keys(optionsState.value.allNotes).findIndex(
+    (index) => index === card.note
+  );
   const { pianoOnce } = usePiano();
 
   const style = {
@@ -74,8 +66,9 @@ export default function Card({ card, idSuffix = "", isSelected, onSelect }) {
             textAnchor="middle"
             dominantBaseline="middle"
           >
-            {card.note}
-            {card.octave}
+            {optionsState.value.notation === "chromatic"
+              ? chromaticIndex
+              : `${card.note}${card.octave}`}
           </text>
         </svg>
 

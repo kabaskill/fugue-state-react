@@ -109,7 +109,6 @@ effect(() => {
 
     playerState.value.hand = playerState.value.hand.map((card) => {
       const newNote = remapNote(card.note);
-      console.log("🚀  newNote:", newNote);
       return {
         ...card,
         note: newNote,
@@ -119,7 +118,6 @@ effect(() => {
 
     playerState.value.deck = playerState.value.deck.map((card) => {
       const newNote = remapNote(card.note);
-      console.log("🚀  newNote:", newNote);
       return {
         ...card,
         note: newNote,
