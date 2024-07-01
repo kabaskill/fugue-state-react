@@ -2,11 +2,18 @@ import { useState } from "react";
 import { optionsState } from "../data/gameState";
 import randomId from "../utils/randomId";
 
+import { Chord, Note } from "tonal";
+
+import { usePiano } from "./PianoProvider";
+
 export default function ChromaFlower() {
   const size = 400;
   const pad = 80;
 
   const notes = optionsState.value.allNotes;
+  console.log("🚀  notes:", notes);
+
+  const { activeNotes } = usePiano();
 
   const svgCenterX = size / 2;
   const svgCenterY = size / 2;
@@ -28,7 +35,6 @@ export default function ChromaFlower() {
   const [lineColor, setLineColor] = useState("#000");
 
   function handlePetalClick(index) {
-
     const angle = (index * 2 * Math.PI) / 12 - Math.PI / 2;
     const point = {
       x: (size / 2 + pad / 6 - pad) * Math.cos(angle),
@@ -47,59 +53,71 @@ export default function ChromaFlower() {
     });
   }
 
+  console.log(activeNotes);
+
   return (
-    <svg
-      className="w-full min-w-full"
-      viewBox={`${-pad} ${-pad} ${size + 2 * pad} ${size + 2 * pad}`}
-      xmlns="http://www.w3.org/2000/svg"
-      textAnchor="middle"
-      dominantBaseline="middle"
-    >
-      <g transform={`translate(${svgCenterX}, ${svgCenterY}) `}>
-        {Object.keys(notes).map((note, index) => {
-          return (
-            <g
-              key={randomId("chroma-petals")}
-              onClick={() => handlePetalClick(index)}
-              style={{ transition: "all 300ms ease-out", cursor: "pointer" }}
-            >
-              <g transform={` rotate(${index * 30}) translate(0, -${size / 8}) `}>
-                <path
-                  d={generateDAttribute(size)}
-                  fill={note.length > 1 ? "#222" : "#eee"}
-                  opacity="0.9"
-                />
+    <div className="flex flex-col ">
+      <svg
+        className="w-full min-w-full"
+        viewBox={`${-pad} ${-pad} ${size + 2 * pad} ${size + 2 * pad}`}
+        xmlns="http://www.w3.org/2000/svg"
+        textAnchor="middle"
+        dominantBaseline="middle"
+      >
+        <g transform={`translate(${svgCenterX}, ${svgCenterY}) `}>
+          {Object.keys(notes).map((note, index) => {
+            const isPlaying = activeNotes.some((playingNote) => playingNote === Note.midi(note));
+
+            return (
+              <g
+                key={randomId("chroma-petals")}
+                onClick={() => handlePetalClick(index)}
+                style={{ transition: "all 300ms ease-out", cursor: "pointer" }}
+                opacity={isPlaying ? "1" : "0.25"}
+              >
+                <g transform={` rotate(${index * 30}) translate(0, -${size / 8}) `}>
+                  <path d={generateDAttribute(size)} fill={note.length > 1 ? "#222" : "#eee"} />
+                </g>
+
+                <g transform={`rotate(${index * 30}) translate(0, -${size / 2 + pad / 6}) `}>
+                  <circle cx="0" cy="0" r={size / 10} fill={notes[note]} />
+                  <text
+                    x="0"
+                    y="0"
+                    fill="white"
+                    fontFamily="monospace"
+                    fontSize={size / 10}
+                    fontWeight="bold"
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    transform={`rotate(${index * -30})`}
+                  >
+                    {optionsState.value.notation === "chromatic" ? index : note}
+                  </text>
+                  {isPlaying && <circle cx="0" cy={pad} r={size / 40} fill={notes[note]} />}
+                </g>
               </g>
-              <g transform={`rotate(${index * 30}) translate(0, -${size / 2 + pad / 6}) `}>
-                <circle cx="0" cy="0" r={size / 10} fill={notes[note]} />
-                <text
-                  x="0"
-                  y="0"
-                  fill="white"
-                  fontFamily="monospace"
-                  fontSize={size / 10}
-                  fontWeight="bold"
-                  textAnchor="middle"
-                  dominantBaseline="middle"
-                  transform={`rotate(${index * -30})`}
-                >
-                  {optionsState.value.notation === "chromatic" ? index : note}
-                </text>
-                <circle cx="0" cy={pad} r={size / 40} fill={notes[note]} />
-              </g>
-            </g>
-          );
-        })}
-        {linePoints.length > 1 && (
-          <polygon
-            points={linePoints.map((p) => `${p.x},${p.y}`).join(" ")}
-            fill={lineColor}
-            stroke={lineColor}
-            strokeWidth="4"
-            opacity="0.75"
-          />
-        )}
-      </g>
-    </svg>
+            );
+          })}
+          {linePoints.length > 1 && (
+            <polygon
+              points={linePoints.map((p) => `${p.x},${p.y}`).join(" ")}
+              fill={lineColor}
+              stroke={lineColor}
+              strokeWidth="4"
+              opacity="0.75"
+            />
+          )}
+        </g>
+      </svg>
+      {Chord.detect(activeNotes).map((chord) => {
+        return (
+          <p key={chord}>
+            {chord}
+            <br />
+          </p>
+        );
+      })}
+    </div>
   );
 }

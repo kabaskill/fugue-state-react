@@ -2,8 +2,8 @@ import React, { useState, Suspense } from "react";
 import { useSignals } from "@preact/signals-react/runtime";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { PianoProvider } from "./components/PianoProvider";
 import MidiPlayer from "./components/MidiPlayer";
+import { PianoProvider } from "./components/PianoProvider";
 import Options from "./components/Options";
 import MainMenu from "./components/MainMenu";
 import Modal from "./components/Modal";
@@ -15,15 +15,12 @@ const Gameplay = React.lazy(() => import("./components/Gameplay"));
 
 export default function App() {
   useSignals();
-
   const [isPianoProviderLoaded, setIsPianoProviderLoaded] = useState(false);
   const [showModal, setShowModal] = useState(true);
-
   const handleLoadPianoProvider = () => {
     setIsPianoProviderLoaded(true);
     setShowModal(false);
   };
-
   return (
     <>
       <Modal showModal={showModal} closeModal={() => setShowModal(false)} showXButton={false}>
@@ -36,6 +33,7 @@ export default function App() {
             Optimized for landscape resolutions. If you are using mobile devices, please rotate your
             device.
           </p>
+          <p>You can also use your keyboard as a piano. Once the Audio Engine is started.</p>
           <button onClick={handleLoadPianoProvider}>Start Audio Engine</button>
         </div>
       </Modal>
@@ -46,13 +44,9 @@ export default function App() {
             <AnimatePresence>
               <Options />
             </AnimatePresence>
-
             {optionsState.value.isMusicPlaying && <MidiPlayer />}
-
             {gameState.value.currentScene === "main-menu" && <MainMenu />}
-
             {gameState.value.currentScene === "cutscene" && <Cutscene />}
-
             {gameState.value.currentScene === "gameplay" && (
               <Suspense fallback={<div className="m-auto text-6xl">Loading...</div>}>
                 <motion.div

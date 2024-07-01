@@ -147,7 +147,7 @@ export default function Gameplay() {
             </div>
 
             <SortableContext items={items.value} strategy={horizontalListSortingStrategy}>
-              <ul className="w-[75%] h-full flex justify-center items-center p-4 gap-4 bg-slate-700">
+              <ul className="w-[75%] h-full flex justify-center items-center p-4 px-24 gap-4 bg-slate-700">
                 {items.value.map((card) => (
                   <Card
                     key={card.id}

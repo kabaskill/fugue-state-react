@@ -1,83 +1,112 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useCallback, useState } from "react";
 import * as Tone from "tone";
+import { Note } from "tonal";
+import { setupKeyboard } from "../utils/keyboard";
 
 const PianoContext = createContext();
 
-export const PianoProvider = ({ children }) => {
+export function PianoProvider({ children }) {
   const [piano, setPiano] = useState(null);
+  const [offset, setOffset] = useState(0);
+
+  const [activeNotes, setActiveNotes] = useState([]);
 
   useEffect(() => {
-    const loadSampler = async () => {
-      await Tone.start();
-      const newPiano = new Tone.Sampler({
-        urls: {
-          "A0": "A0.mp3",
-          "C1": "C1.mp3",
-          "D#1": "Ds1.mp3",
-          "F#1": "Fs1.mp3",
-          "A1": "A1.mp3",
-          "C2": "C2.mp3",
-          "D#2": "Ds2.mp3",
-          "F#2": "Fs2.mp3",
-          "A2": "A2.mp3",
-          "C3": "C3.mp3",
-          "D#3": "Ds3.mp3",
-          "F#3": "Fs3.mp3",
-          "A3": "A3.mp3",
-          "C4": "C4.mp3",
-          "D#4": "Ds4.mp3",
-          "F#4": "Fs4.mp3",
-          "A4": "A4.mp3",
-          "C5": "C5.mp3",
-          "D#5": "Ds5.mp3",
-          "F#5": "Fs5.mp3",
-          "A5": "A5.mp3",
-          "C6": "C6.mp3",
-          "D#6": "Ds6.mp3",
-          "F#6": "Fs6.mp3",
-          "A6": "A6.mp3",
-          "C7": "C7.mp3",
-          "D#7": "Ds7.mp3",
-          "F#7": "Fs7.mp3",
-          "A7": "A7.mp3",
-          "C8": "C8.mp3",
-        },
-        release: 0.5,
-        volume: 0,
-        baseUrl: `${import.meta.env.BASE_URL}audio/piano/`,
-        onload: () => console.log("Sampler loaded"),
-      }).toDestination();
-      setPiano(newPiano);
-    };
+    const sampler = new Tone.Sampler({
+      urls: {
+        A0: "A0.mp3",
+        C1: "C1.mp3",
+        "D#1": "Ds1.mp3",
+        "F#1": "Fs1.mp3",
+        A1: "A1.mp3",
+        C2: "C2.mp3",
+        "D#2": "Ds2.mp3",
+        "F#2": "Fs2.mp3",
+        A2: "A2.mp3",
+        C3: "C3.mp3",
+        "D#3": "Ds3.mp3",
+        "F#3": "Fs3.mp3",
+        A3: "A3.mp3",
+        C4: "C4.mp3",
+        "D#4": "Ds4.mp3",
+        "F#4": "Fs4.mp3",
+        A4: "A4.mp3",
+        C5: "C5.mp3",
+        "D#5": "Ds5.mp3",
+        "F#5": "Fs5.mp3",
+        A5: "A5.mp3",
+        C6: "C6.mp3",
+        "D#6": "Ds6.mp3",
+        "F#6": "Fs6.mp3",
+        A6: "A6.mp3",
+        C7: "C7.mp3",
+        "D#7": "Ds7.mp3",
+        "F#7": "Fs7.mp3",
+        A7: "A7.mp3",
+        C8: "C8.mp3",
+      },
+      release: 1,
+      volume: 0,
+      baseUrl: `${import.meta.env.BASE_URL}audio/piano/`,
+      onload: () => {
+        console.log("Sampler loaded!");
+      },
+    }).toDestination();
 
-    loadSampler();
+    setPiano(sampler);
+
+    return () => {
+      sampler.dispose();
+    };
   }, []);
 
-  const pianoOnce = (note = "A4", duration = "8n") => {
-    if (!piano) return;
-    piano.triggerAttackRelease(note, duration, Tone.now());
+  const playNote = (note, noteOffset) => {
+    setActiveNotes((prev) => [...prev, Note.midi(note + noteOffset)]);
   };
 
-  const pianoAttack = (note = "A4", velocity) => {
-    if (!piano) return;
-    piano.triggerAttack(note, Tone.now(), velocity);
+  const releaseNote = (note, noteOffset) => {
+    setActiveNotes((prev) => prev.filter((n) => n !== Note.midi(note + noteOffset)));
   };
 
-  const pianoRelease = (note = "A4") => {
+  const pianoOnce = (note, duration) => {
     if (!piano) return;
-    piano.triggerRelease(note);
+    piano.triggerAttackRelease(note, duration);
   };
 
-  const pianoReleaseAll = () => {
+  const playKey = useCallback(
+    (note, noteOffset, isKeyUp = false) => {
+      if (!piano) return;
+
+      const fullNote = `${note}${noteOffset + offset}`;
+
+      if (isKeyUp) {
+        piano.triggerRelease(fullNote);
+        releaseNote(note, noteOffset);
+      } else {
+        piano.triggerAttack(fullNote);
+        playNote(note, noteOffset);
+      }
+    },
+    [piano, offset]
+  );
+
+  const changeOffset = useCallback((delta) => {
+    setOffset((prev) => prev + delta);
+  }, []);
+
+  useEffect(() => {
     if (!piano) return;
-    piano.releaseAll();
-  };
+
+    const cleanup = setupKeyboard(playKey, changeOffset);
+
+    return cleanup;
+  }, [piano, playKey, changeOffset]);
 
   return (
-    <PianoContext.Provider value={{ piano, pianoOnce, pianoAttack, pianoRelease, pianoReleaseAll }}>
+    <PianoContext.Provider value={{ piano, pianoOnce, playKey, offset, activeNotes }}>
       {children}
     </PianoContext.Provider>
   );
-};
+}
 
 export const usePiano = () => useContext(PianoContext);

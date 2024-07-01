@@ -64,7 +64,7 @@ export default function Card({ card, idSuffix = "", isSelected, onSelect }) {
           textAnchor="middle"
           dominantBaseline="middle"
         >
-          <circle cx="50%" cy="50%" r="40%" fill={card.color} />
+          <circle cx="50%" cy="50%" r="35%" fill={card.color} />
           <text
             x="50%"
             y="50%"
