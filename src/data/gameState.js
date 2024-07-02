@@ -41,7 +41,7 @@ const card = (note, octave, cost = 1, unlocked = true) => ({
   note,
   octave,
   color: coloredNotes[note],
-  description: `Plays the note `,
+  description: `Plays `,
   cost,
   click: () => {
     console.log(`Card Played (${note}, ${octave})`);

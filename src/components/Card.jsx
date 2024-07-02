@@ -34,7 +34,7 @@ export default function Card({ card, idSuffix = "", isSelected, onSelect }) {
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <motion.button
-        animate={{ y: isSelected ? -25 : 0 }}
+        animate={{ y: isSelected ? -35 : 0 }}
         whileHover={{ scale: 1.05 }}
         className="relative aspect-[8/11] max-w-full max-h-full cursor-pointer pb-2"
         onClick={handleCardClick}
@@ -51,7 +51,7 @@ export default function Card({ card, idSuffix = "", isSelected, onSelect }) {
             y="50%"
             fill="white"
             fontFamily="monospace"
-            fontSize="0.8rem"
+            fontSize="0.7rem"
             fontWeight="bold"
           >
             {card.cost}
@@ -64,13 +64,13 @@ export default function Card({ card, idSuffix = "", isSelected, onSelect }) {
           textAnchor="middle"
           dominantBaseline="middle"
         >
-          <circle cx="50%" cy="50%" r="35%" fill={card.color} />
+          <circle cx="50%" cy="50%" r="40%" fill={card.color} />
           <text
             x="50%"
             y="50%"
             fill="white"
             fontFamily="monospace"
-            // fontSize="2.5rem"
+            fontSize="0.8rem"
             fontWeight="bold"
           >
             {optionsState.value.notation === "chromatic"
@@ -82,12 +82,11 @@ export default function Card({ card, idSuffix = "", isSelected, onSelect }) {
         <div className="text-black bg-slate-100 rounded-md h-1/3 w-full text-balance flex justify-center items-center ">
           <p>
             {card.description}
-            <br />
+
             <span
               style={{
                 color: card.color,
                 fontWeight: "bold",
-                fontSize: "1.5rem",
               }}
             >
               {card.note}

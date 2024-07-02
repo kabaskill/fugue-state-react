@@ -11,9 +11,9 @@ export default function ChromaFlower() {
   const pad = 80;
 
   const notes = optionsState.value.allNotes;
-  console.log("🚀  notes:", notes);
 
-  const { activeNotes } = usePiano();
+  const { activeNotes, playKey } = usePiano();
+  const activeNoteNames = activeNotes.map((note) => Note.fromMidiSharps(note));
 
   const svgCenterX = size / 2;
   const svgCenterY = size / 2;
@@ -53,25 +53,30 @@ export default function ChromaFlower() {
     });
   }
 
-  console.log(activeNotes);
-
   return (
-    <div className="flex flex-col ">
+    <div className="flex flex-col size-full">
       <svg
-        className="w-full min-w-full"
         viewBox={`${-pad} ${-pad} ${size + 2 * pad} ${size + 2 * pad}`}
         xmlns="http://www.w3.org/2000/svg"
         textAnchor="middle"
         dominantBaseline="middle"
       >
+        <text x={size / 2} y={size / 2} style={{ fontSize: "1.2rem" }} fill="white">
+          {Chord.detect(activeNoteNames)[0]}
+        </text>
         <g transform={`translate(${svgCenterX}, ${svgCenterY}) `}>
           {Object.keys(notes).map((note, index) => {
-            const isPlaying = activeNotes.some((playingNote) => playingNote === Note.midi(note));
+            const isPlaying = activeNotes.some(
+              (playingNote) => Note.pitchClass(Note.fromMidiSharps(playingNote)) === note
+            );
 
             return (
               <g
                 key={randomId("chroma-petals")}
                 onClick={() => handlePetalClick(index)}
+                onPointerDown={() => playKey(Object.keys(notes)[index], index < 3 ? 3 : 4)}
+                onPointerUp={() => playKey(Object.keys(notes)[index], index < 3 ? 3 : 4, true)}
+                onPointerLeave={() => playKey(Object.keys(notes)[index], index < 3 ? 3 : 4, true)}
                 style={{ transition: "all 300ms ease-out", cursor: "pointer" }}
                 opacity={isPlaying ? "1" : "0.25"}
               >
@@ -110,14 +115,10 @@ export default function ChromaFlower() {
           )}
         </g>
       </svg>
-      {Chord.detect(activeNotes).map((chord) => {
-        return (
-          <p key={chord}>
-            {chord}
-            <br />
-          </p>
-        );
-      })}
+      {/* {activeNoteNames &&
+        Chord.detect(activeNoteNames).map((chord) => {
+          return <div key={randomId("detect-chord")}>{chord}</div>;
+        })} */}
     </div>
   );
 }

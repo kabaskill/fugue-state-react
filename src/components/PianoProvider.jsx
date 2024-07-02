@@ -60,15 +60,15 @@ export function PianoProvider({ children }) {
     };
   }, []);
 
-  const playNote = (note, noteOffset) => {
-    setActiveNotes((prev) => [...prev, Note.midi(note + noteOffset)]);
+  const playNote = (note) => {
+    setActiveNotes((prev) => [...prev, Note.midi(note)].sort((a, b) => a - b));
   };
 
-  const releaseNote = (note, noteOffset) => {
-    setActiveNotes((prev) => prev.filter((n) => n !== Note.midi(note + noteOffset)));
+  const releaseNote = (note) => {
+    setActiveNotes((prev) => prev.filter((n) => n !== Note.midi(note)).sort((a, b) => a - b));
   };
 
-  const pianoOnce = (note, duration) => {
+  const pianoOnce = (note, duration = "4n") => {
     if (!piano) return;
     piano.triggerAttackRelease(note, duration);
   };
@@ -81,10 +81,10 @@ export function PianoProvider({ children }) {
 
       if (isKeyUp) {
         piano.triggerRelease(fullNote);
-        releaseNote(note, noteOffset);
+        releaseNote(fullNote);
       } else {
         piano.triggerAttack(fullNote);
-        playNote(note, noteOffset);
+        playNote(fullNote);
       }
     },
     [piano, offset]

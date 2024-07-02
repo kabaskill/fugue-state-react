@@ -2,15 +2,14 @@ import { useState } from "react";
 import { computed } from "@preact/signals-react";
 import { closestCenter, DndContext, DragOverlay, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
-
 import { CustomPointerSensor } from "../utils/CustomPointerSensor";
+import { motion } from "framer-motion";
 
 import Card from "./Card";
 import Deck from "./Deck";
 import SheetMusic from "./SheetMusic";
 import ChromaFlower from "./ChromaFlower";
 
-import { motion } from "framer-motion";
 import { gameState, optionsState, playerState } from "../data/gameState";
 
 export default function Gameplay() {
@@ -105,19 +104,19 @@ export default function Gameplay() {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="grid grid-cols-6 grid-rows-3 size-full">
+        <div className="grid grid-cols-6 grid-rows-4 size-full">
           <Deck
             cards={playerState.value.deck}
             showModal={isDeck}
             closeModal={() => setIsDeck(false)}
           />
 
-          <div className="flex-grow flex row-span-2 col-span-6">
-            <div className="flex flex-grow items-center justify-center p-4 ">
+          <div className="flex row-span-3 col-span-6">
+            <div className="h-full aspect-square items-center justify-center p-4  ">
               <ChromaFlower />
             </div>
 
-            <div className="flex flex-grow flex-col items-center justify-center gap-4 p-4 bg-green-500 relative ">
+            <div className="flex flex-1 items-center justify-center gap-4 p-4 bg-green-500 relative ">
               <div className="bg-white text-black flex justify-center ">
                 <SheetMusic id="core-gameplay" notation={noteString} />
               </div>
@@ -138,16 +137,25 @@ export default function Gameplay() {
                   Main Menu
                 </motion.button>
               </div>
+
+              <div className="absolute bottom-0 right-0  w-[35%]">
+                <img
+                  src={`${import.meta.env.BASE_URL}placeholders/Fritz.png`}
+                  className="scale-x-[-1]"
+                  alt="characters"
+                  loading="lazy"
+                />
+              </div>
             </div>
           </div>
 
           <div className="bg-slate-600 row-span-1 col-span-6 flex ">
-            <div className="w-[10%] flex flex-col justify-center items-center gap-2 ">
+            <div className="w-[15%] flex flex-col justify-center items-center gap-2 ">
               <p className="text-white font-bold text-2xl">Energy: {playerState.value.energy}</p>
             </div>
 
             <SortableContext items={items.value} strategy={horizontalListSortingStrategy}>
-              <ul className="w-[75%] h-full flex justify-center items-center p-4 px-24 gap-4 bg-slate-700">
+              <ul className="w-[65%] h-full flex justify-center items-center p-4 px-24 gap-4 bg-slate-700">
                 {items.value.map((card) => (
                   <Card
                     key={card.id}
@@ -159,15 +167,23 @@ export default function Gameplay() {
               </ul>
             </SortableContext>
 
-            <div className="w-[20%] py-20 px-4 grid grid-cols-2 grid-rows-2 grid-flow-col  gap-4">
-              <button onClick={() => handleTurn("play")} disabled={selectedCards.size === 0}>
+            <div className="w-[20%] py-8 px-4 grid grid-cols-2 grid-rows-2 grid-flow-col place-items-center gap-4">
+              <button
+                className="size-4/5"
+                onClick={() => handleTurn("play")}
+                disabled={selectedCards.size === 0}
+              >
                 Play
               </button>
-              <button onClick={() => handleTurn("discard")} disabled={selectedCards.size === 0}>
+              <button
+                className="size-4/5"
+                onClick={() => handleTurn("discard")}
+                disabled={selectedCards.size === 0}
+              >
                 Discard
               </button>
               <button
-                className="self-center row-span-2 w-full aspect-[8/11]"
+                className="self-center row-span-2 h-full aspect-[8/11]"
                 onClick={() => setIsDeck(true)}
               >
                 Show <br />
