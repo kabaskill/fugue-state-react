@@ -30,7 +30,7 @@ export default function Gameplay() {
 
   const [isDeck, setIsDeck] = useState(false);
 
-  const [noteString, setNoteString] = useState(`X:1\nT:Core Gameplay\nK:C\nM:4/4\nL:1/4\n${"dd"}`);
+  const [noteString, setNoteString] = useState(`X:1\nT:Learning the Notes\nK:C\nM:4/4\nL:1/4\n${"dd"}`);
 
   function handleDragStart(event) {
     const { active } = event;

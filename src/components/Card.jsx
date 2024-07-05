@@ -80,7 +80,7 @@ export default function Card({ card, idSuffix = "", isSelected, onSelect }) {
         </svg>
 
         <div className="text-black bg-slate-100 rounded-md h-1/3 w-full text-balance flex justify-center items-center ">
-          <p>
+          <p className="text-lg">
             {card.description}
 
             <span

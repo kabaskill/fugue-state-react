@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useCallback, useState } from "react";
+import { createContext, useContext, useEffect, useCallback, useState,  } from "react";
 import * as Tone from "tone";
 import { Note } from "tonal";
 import { setupKeyboard } from "../utils/keyboard";
@@ -52,6 +52,9 @@ export function PianoProvider({ children }) {
         console.log("Sampler loaded!");
       },
     }).toDestination();
+
+    const reverb = new Tone.Reverb(5).toDestination();
+    sampler.connect(reverb);
 
     setPiano(sampler);
 

@@ -19,25 +19,25 @@ export default function Cutscene(isCutscene = gameState.value.currentScene === "
       closeModal={() => (gameState.value = { ...gameState.value, currentScene: "gameplay" })}
       showXButton={false}
     >
-      <h1 className=" absolute top-[-4rem] text-white">
+      <h1 className=" absolute top-[-4.5rem] text-white">
         {scene.title} <span className="italic">{scene.description}</span>
       </h1>
 
       <img
-        src={`${import.meta.env.BASE_URL}placeholders/${scene.dialog[dialogIndex].character}.png`}
+        src={`${import.meta.env.BASE_URL}placeholders/${scene.dialog[dialogIndex].image}.png`}
         alt="characters"
         className={`absolute top-0 h-2/3 ${
-          scene.dialog[dialogIndex].character === "Player" ? "left-0" : "right-0 scale-x-[-1]"
+          scene.dialog[dialogIndex].image === "Player" ? "left-0" : "right-0 scale-x-[-1]"
         }`}
         loading="lazy"
       />
       <div className="border-black border-4 rounded-2xl w-[100%] h-1/3 mx-auto absolute bottom-0 left-0 ">
-        <div className="left-6 top-6 absolute">
-          <h2>{scene.dialog[dialogIndex].character}</h2>
-          <p className="">{scene.dialog[dialogIndex].line}</p>
+        <div className="p-8 text-center">
+          <h2 className="text-lg ">{scene.dialog[dialogIndex].image}</h2>
+          <p className="text-2xl text-balance">{scene.dialog[dialogIndex].line}</p>
         </div>
 
-        <div className="absolute right-4 top-4 h-3/5 aspect-square">
+        <div className="absolute right-4  h-1/5 aspect-square">
           {isEnded && (
             <button
               className="size-full"

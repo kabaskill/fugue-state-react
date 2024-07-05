@@ -5,20 +5,32 @@ export const cutscenes = [
     background: "",
     dialog: [
       {
-        character: "Player",
-        line: "Hey, Fritz! What's up?",
+        image: "",
+        line: "We see a kid running from the village with a bread that he stole, he stops on the entrance of the forest and take a breather. Suddenly starts to hear some music coming out from the forest and decides to go there.",
       },
       {
-        character: "Fritz",
-        line: "Hey, Player! I'm good. How are you?",
+        image: "",
+        line: "Seeing a self playing organ, the kid was amazed. Curiosity starts to creep and the kid decides to take a look at the organ.",
       },
       {
-        character: "Player",
-        line: "I'm good too. Let's go on an adventure!",
+        image: "",
+        line: "Suddenly hears a voice: 'It's not polite to fiddle with that's not yours!'",
       },
       {
-        character: "Fritz",
-        line: "Sure thing! Let's go!",
+        image: "Player",
+        line: "Who are you?",
+      },
+      {
+        image: "Fritz",
+        line: "I'm Fritz, live here in the woods with my contraptions. You seem interested and tired. You could also be hungry. Let me get something to eat and some water for you.",
+      },
+      {
+        image: "Player",
+        line: "Oh-Okay, I guess. - The kid sees the ChromaFlower lighting up on the organ as the organ play itself. -",
+      },
+      {
+        image: "Fritz",
+        line: "- Fritz returns with a plate and a glass of water - I can teach you how it works if you want?",
       },
     ],
   },
@@ -28,19 +40,19 @@ export const cutscenes = [
     background: "",
     dialog: [
       {
-        character: "Player",
+        image: "Player",
         line: "Hey, Fritz! What's up?",
       },
       {
-        character: "Fritz",
+        image: "Fritz",
         line: "Hey, Player! I'm good. How are you?",
       },
       {
-        character: "Player",
+        image: "Player",
         line: "I'm good too. Let's go on an adventure!",
       },
       {
-        character: "Fritz",
+        image: "Fritz",
         line: "Sure thing! Let's go!",
       },
     ],
@@ -51,22 +63,21 @@ export const cutscenes = [
     background: "",
     dialog: [
       {
-        character: "Player",
+        image: "Player",
         line: "Hey, Fritz! What's up?",
       },
       {
-        character: "Fritz",
+        image: "Fritz",
         line: "Hey, Player! I'm good. How are you?",
       },
       {
-        character: "Player",
+        image: "Player",
         line: "I'm good too. Let's go on an adventure!",
       },
       {
-        character: "Fritz",
+        image: "Fritz",
         line: "Sure thing! Let's go!",
       },
     ],
   },
-
 ];

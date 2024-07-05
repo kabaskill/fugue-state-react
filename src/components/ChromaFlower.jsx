@@ -2,9 +2,10 @@ import { useState } from "react";
 import { optionsState } from "../data/gameState";
 import randomId from "../utils/randomId";
 
-import { Chord, Note } from "tonal";
+import { AbcNotation, Chord, Note } from "tonal";
 
 import { usePiano } from "./PianoProvider";
+import SheetMusic from "./SheetMusic";
 
 export default function ChromaFlower() {
   const size = 400;
@@ -14,6 +15,11 @@ export default function ChromaFlower() {
 
   const { activeNotes, playKey } = usePiano();
   const activeNoteNames = activeNotes.map((note) => Note.fromMidiSharps(note));
+  const abcNoteString = activeNoteNames
+    .map((note) => AbcNotation.scientificToAbcNotation(note))
+    .join("");
+
+  console.log("🚀  abcNoteString:", abcNoteString);
 
   const svgCenterX = size / 2;
   const svgCenterY = size / 2;
@@ -115,10 +121,14 @@ export default function ChromaFlower() {
           )}
         </g>
       </svg>
-      {/* {activeNoteNames &&
-        Chord.detect(activeNoteNames).map((chord) => {
-          return <div key={randomId("detect-chord")}>{chord}</div>;
-        })} */}
+      <div className="bg-card-bg bg-center bg-cover text-black  h-[30%] flex justify-center items-center px-24 ">
+        <SheetMusic
+          id="chroma-notes"
+          notation={`X:1\nK:C\nM:4/4\nL:1\n[${
+            abcNoteString ? abcNoteString : ""
+          }]`}
+        />
+      </div>
     </div>
   );
 }
