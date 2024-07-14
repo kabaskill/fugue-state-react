@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { optionsState } from "../data/gameState";
-import randomId from "../utils/randomId";
 
-import { AbcNotation, Chord, Note } from "tonal";
+import { Chord, Note } from "tonal";
 
 import { usePiano } from "./PianoProvider";
-import SheetMusic from "./SheetMusic";
 
 export default function ChromaFlower() {
   const size = 400;
@@ -13,13 +11,8 @@ export default function ChromaFlower() {
 
   const notes = optionsState.value.allNotes;
 
-  const { activeNotes, playKey } = usePiano();
+  const { activeNotes, pianoOnce } = usePiano();
   const activeNoteNames = activeNotes.map((note) => Note.fromMidiSharps(note));
-  const abcNoteString = activeNoteNames
-    .map((note) => AbcNotation.scientificToAbcNotation(note))
-    .join("");
-
-  console.log("🚀  abcNoteString:", abcNoteString);
 
   const svgCenterX = size / 2;
   const svgCenterY = size / 2;
@@ -47,8 +40,9 @@ export default function ChromaFlower() {
       y: (size / 2 + pad / 6 - pad) * Math.sin(angle),
     };
 
-    setLineColor("#555");
+    pianoOnce(`${Object.keys(notes)[index]}${index < 3 ? 3 : 4}`);
 
+    setLineColor("#555");
     setLinePoints((prevPoints) => {
       const existingPoint = prevPoints.find((p) => p.x === point.x && p.y === point.y);
       if (existingPoint) {
@@ -78,13 +72,13 @@ export default function ChromaFlower() {
 
             return (
               <g
-                key={randomId("chroma-petals")}
+                key={`chroma-petals-${note}`}
                 onClick={() => handlePetalClick(index)}
-                onPointerDown={() => playKey(Object.keys(notes)[index], index < 3 ? 3 : 4)}
-                onPointerUp={() => playKey(Object.keys(notes)[index], index < 3 ? 3 : 4, true)}
-                onPointerLeave={() => playKey(Object.keys(notes)[index], index < 3 ? 3 : 4, true)}
-                style={{ transition: "all 300ms ease-out", cursor: "pointer" }}
-                opacity={isPlaying ? "1" : "0.25"}
+                style={{
+                  transition: "opacity 500ms ease-out",
+                  cursor: "pointer",
+                  opacity: isPlaying ? "1" : "0.25",
+                }}
               >
                 <g transform={` rotate(${index * 30}) translate(0, -${size / 8}) `}>
                   <path d={generateDAttribute(size)} fill={note.length > 1 ? "#222" : "#eee"} />
@@ -121,14 +115,6 @@ export default function ChromaFlower() {
           )}
         </g>
       </svg>
-      <div className="bg-card-bg bg-center bg-cover text-black  h-[30%] flex justify-center items-center px-24 ">
-        <SheetMusic
-          id="chroma-notes"
-          notation={`X:1\nK:C\nM:4/4\nL:1\n[${
-            abcNoteString ? abcNoteString : ""
-          }]`}
-        />
-      </div>
     </div>
   );
 }

@@ -19,6 +19,7 @@
     "framer-motion": "^11.2.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-lazy-load-image-component": "^1.6.2",
     "tonal": "^6.0.1",
     "tone": "^14.9.17"
   },

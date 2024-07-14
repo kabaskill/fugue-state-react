@@ -41,42 +41,34 @@ export const cutscenes = [
     dialog: [
       {
         image: "Player",
-        line: "Hey, Fritz! What's up?",
+        line: "Hey, it's working!",
       },
       {
         image: "Fritz",
-        line: "Hey, Player! I'm good. How are you?",
+        line: "Hahah! Sure it does. It's my machine after all. So, are you ready for another challenge?",
       },
       {
         image: "Player",
-        line: "I'm good too. Let's go on an adventure!",
+        line: "Let's go!",
       },
       {
         image: "Fritz",
-        line: "Sure thing! Let's go!",
+        line: "Sure thing",
       },
     ],
   },
   {
     title: "Chapter 3:",
-    description: "The Journey Continues",
+    description: "The Demo Ends",
     background: "",
     dialog: [
       {
-        image: "Player",
-        line: "Hey, Fritz! What's up?",
+        image: "Fritz",
+        line: "This concludes the demo but don't worry, I have more things for you to enjoy...",
       },
       {
         image: "Fritz",
-        line: "Hey, Player! I'm good. How are you?",
-      },
-      {
-        image: "Player",
-        line: "I'm good too. Let's go on an adventure!",
-      },
-      {
-        image: "Fritz",
-        line: "Sure thing! Let's go!",
+        line: "I kind of need your help though. Do you want to give me some feedback so I can craft the rest of the journey?",
       },
     ],
   },

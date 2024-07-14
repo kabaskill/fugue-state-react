@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useCallback, useState,  } from "react";
+import { createContext, useContext, useEffect, useCallback, useState } from "react";
 import * as Tone from "tone";
 import { Note } from "tonal";
 import { setupKeyboard } from "../utils/keyboard";
@@ -71,9 +71,12 @@ export function PianoProvider({ children }) {
     setActiveNotes((prev) => prev.filter((n) => n !== Note.midi(note)).sort((a, b) => a - b));
   };
 
-  const pianoOnce = (note, duration = "4n") => {
+  const pianoOnce = (note) => {
     if (!piano) return;
-    piano.triggerAttackRelease(note, duration);
+
+    piano.triggerAttackRelease(note, 3);
+    playNote(note);
+    setTimeout(() => releaseNote(note), 3000);
   };
 
   const playKey = useCallback(

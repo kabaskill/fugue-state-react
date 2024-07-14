@@ -9,6 +9,7 @@ import MainMenu from "./components/MainMenu";
 import Modal from "./components/Modal";
 import Cutscene from "./components/Cutscene";
 
+import { LazyLoadImage } from "react-lazy-load-image-component";
 import { gameState, optionsState } from "./data/gameState";
 
 const Gameplay = React.lazy(() => import("./components/Gameplay"));
@@ -24,17 +25,17 @@ export default function App() {
   return (
     <>
       <Modal showModal={showModal} closeModal={() => setShowModal(false)} showXButton={false}>
-        <div className="h-full flex flex-col items-center justify-around gap-8 p-12">
-          <p className=" text-center ">
-            Audio Engine needs to be loaded manually before you can start playing. Please click the
+        <div className="h-full flex flex-col items-center justify-around gap-4 p-12">
+          <p className=" text-center text-xl">
+            Audio Engine needs to be loaded manually before you can start playing. <br /> Click the
             button below to load the Audio Engine.
+            <br /> You can also use your keyboard as a piano once the Audio Engine is started.
+            <br /> Use black and white keys to play the notes. Yellow keys change the octave you are
+            playing. <br /> Optimized for desktop resolutions.
           </p>
-          <p>
-            Optimized for landscape resolutions. If you are using mobile devices, please rotate your
-            device.
-          </p>
-          <p>You can also use your keyboard as a piano. Once the Audio Engine is started.</p>
+
           <button onClick={handleLoadPianoProvider}>Start Audio Engine</button>
+          <LazyLoadImage src={`${import.meta.env.BASE_URL}/images/Keyboard.png`} alt="keyboard" />
         </div>
       </Modal>
 

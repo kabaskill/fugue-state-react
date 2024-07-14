@@ -27,7 +27,9 @@ export default function Card({ card, idSuffix = "", isSelected, onSelect }) {
   const handleCardClick = () => {
     if (!isDragging) {
       onSelect();
-      pianoOnce(card.note + card.octave, "4n");
+      if (!isSelected) {
+        pianoOnce(card.note + card.octave);
+      }
     }
   };
 
@@ -51,7 +53,7 @@ export default function Card({ card, idSuffix = "", isSelected, onSelect }) {
             y="50%"
             fill="white"
             fontFamily="monospace"
-            fontSize="0.7rem"
+            fontSize="0.65rem"
             fontWeight="bold"
           >
             {card.cost}

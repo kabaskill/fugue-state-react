@@ -36,25 +36,17 @@ const mappedNotes = (startKey) => {
 const coloredNotes = mappedNotes("A");
 
 const card = (note, octave, cost = 1, unlocked = true) => ({
-  id: randomId("card-"),
+  id: randomId("card"),
   unlocked,
   note,
   octave,
   color: coloredNotes[note],
   description: `Plays `,
   cost,
-  click: () => {
-    console.log(`Card Played (${note}, ${octave})`);
-  },
 });
 
 const noteDeck = (allNotes) => {
-  return Object.keys(allNotes).flatMap((note) => [
-    card(note, 4),
-    card(note, 5),
-    card(note, 4),
-    card(note, 5),
-  ]);
+  return Object.keys(allNotes).flatMap((note) => [card(note, 4), card(note, 5)]);
 };
 
 const drawHand = (deck, handSize) => {
@@ -79,13 +71,12 @@ const defaultOptionsState = {
 };
 
 const initialDeck = shuffleArray(noteDeck(defaultOptionsState.allNotes));
-const initialHand = drawHand(initialDeck, 5);
+const initialHand = drawHand(initialDeck, 7);
 
 const defaultPlayerState = {
   deck: initialDeck,
   hand: initialHand,
-  handSize: 5,
-  energy: 0,
+  handSize: 7,
   totalEnergySpent: 0,
 };
 
