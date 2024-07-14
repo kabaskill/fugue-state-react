@@ -68,6 +68,7 @@ const defaultOptionsState = {
   notation: "scientific",
   rootNote: "A",
   allNotes: coloredNotes,
+  doremiArray: ["la", "la#", "si", "do", "do#", "re", "re#", "mi", "fa", "fa#", "sol", "sol#"],
 };
 
 const initialDeck = shuffleArray(noteDeck(defaultOptionsState.allNotes));
@@ -84,6 +85,7 @@ const defaultPlayerState = {
 export const gameState = signal(defaultGameState);
 export const playerState = signal(defaultPlayerState);
 export const optionsState = signal(defaultOptionsState);
+export const pianoProviderLoaded = signal(false);
 
 // Effects
 let rootNoteCache = optionsState.peek().rootNote;

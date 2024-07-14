@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useCallback, useState } from "rea
 import * as Tone from "tone";
 import { Note } from "tonal";
 import { setupKeyboard } from "../utils/keyboard";
+import { pianoProviderLoaded } from "../data/gameState";
 
 const PianoContext = createContext();
 
@@ -49,6 +50,7 @@ export function PianoProvider({ children }) {
       volume: 0,
       baseUrl: `${import.meta.env.BASE_URL}audio/piano/`,
       onload: () => {
+        pianoProviderLoaded.value = true;
         console.log("Sampler loaded!");
       },
     }).toDestination();
@@ -71,12 +73,18 @@ export function PianoProvider({ children }) {
     setActiveNotes((prev) => prev.filter((n) => n !== Note.midi(note)).sort((a, b) => a - b));
   };
 
-  const pianoOnce = (note) => {
+  const pianoOnce = (note, duration = 3) => {
     if (!piano) return;
 
-    piano.triggerAttackRelease(note, 3);
+    piano.triggerAttackRelease(note, duration);
     playNote(note);
-    setTimeout(() => releaseNote(note), 3000);
+    setTimeout(() => releaseNote(note), duration * 1000);
+  };
+
+  const releaseAllNotes = () => {
+    setActiveNotes([]);
+    piano.releaseAll();
+    console.log("asdfasdfasdfasdf")
   };
 
   const playKey = useCallback(
@@ -109,7 +117,7 @@ export function PianoProvider({ children }) {
   }, [piano, playKey, changeOffset]);
 
   return (
-    <PianoContext.Provider value={{ piano, pianoOnce, playKey, offset, activeNotes }}>
+    <PianoContext.Provider value={{ pianoOnce, playKey, releaseAllNotes, offset, activeNotes }}>
       {children}
     </PianoContext.Provider>
   );

@@ -76,8 +76,8 @@ export default function Options() {
                 >
                   <option value="scientific">Scientific</option>
                   <option value="chromatic">Chromatic</option>
-                  {/* <option value="abc">ABC Notation</option>
-                  <option value="standart">Do-Re-Mi Notation</option> */}
+                  <option value="do-re-mi">Do-Re-Mi Notation</option>
+                  {/* <option value="abc">ABC Notation</option> */}
                 </select>
               </div>
             </div>

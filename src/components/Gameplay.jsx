@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { computed } from "@preact/signals-react";
 import { closestCenter, DndContext, DragOverlay, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
@@ -7,7 +7,8 @@ import { CustomPointerSensor } from "../utils/CustomPointerSensor";
 import Card from "./Card";
 import Deck from "./Deck";
 import SheetMusic from "./SheetMusic";
-import ChromaFlower from "./ChromaFlower";
+
+const ChromaFlower = React.lazy(() => import("./ChromaFlower"));
 
 import { gameState, optionsState, playerState } from "../data/gameState";
 import QuestPane from "./QuestPane";
@@ -15,6 +16,7 @@ import randomId from "../utils/randomId";
 import { levels } from "../data/levels";
 import { AbcNotation, Note } from "tonal";
 import { usePiano } from "./PianoProvider";
+import { motion } from "framer-motion";
 
 export default function Gameplay() {
   const sensors = useSensors(
@@ -22,7 +24,7 @@ export default function Gameplay() {
       activationConstraint: {
         delay: 100,
         distance: 20,
-        tolerance: 5,
+        tolerance: 50,
       },
     })
   );
@@ -151,21 +153,54 @@ export default function Gameplay() {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div className="grid grid-cols-6 grid-rows-3 size-full">
+      <div className="grid grid-cols-6 grid-rows-3 size-full relative">
         <Deck
           cards={playerState.value.deck}
           showModal={isDeckOpen}
           closeModal={() => setIsDeckOpen(false)}
         />
 
+        <QuestPane  />
+
+        {taskFinished && (
+          <button
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2/5 h-1/4 z-50 text-2xl "
+            onClick={() =>
+              (gameState.value = {
+                ...gameState.value,
+                currentLevel: gameState.value.currentLevel + 1,
+                currentScene: "cutscene",
+                currentCutscene: gameState.value.currentCutscene + 1,
+              })
+            }
+          >
+            GO TO NEXT LEVEL
+          </button>
+        )}
+
+        <div className="flex justify-end gap-2 absolute top-4 right-4 z-10">
+          <button onClick={() => (optionsState.value = { ...optionsState.value, isActive: true })}>
+            Options
+          </button>
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => {
+              gameState.value = { ...gameState.value, currentScene: "main-menu" };
+            }}
+          >
+            Main Menu
+          </motion.button>
+        </div>
+
         <div className="flex row-span-2 col-span-6">
           <div className="w-1/3">
             <ChromaFlower />
           </div>
 
-          <div className="flex  w-2/3 gap-4 p-4 bg-slate-500  ">
-            <div className="flex flex-col flex-1 gap-4">
-              <div className="bg-slate-100 text-black flex flex-col flex-1 justify-center relative pb-16">
+          <div className="flex w-2/3 gap-4 p-2 bg-slate-500  ">
+            <div className="flex flex-col w-full gap-2">
+              <div className="bg-slate-100  relative pb-16 rounded-xl ">
                 <SheetMusic
                   id={levelInfo.title}
                   title={levelInfo.title}
@@ -174,12 +209,12 @@ export default function Gameplay() {
                 />
               </div>
 
-              <div className="bg-slate-100 text-black flex flex-col flex-1 justify-center relative pb-16">
-                <SheetMusic id="task" title="Task" notation={playerTaskString + abcNoteString} />
+              <div className="bg-slate-100 flex-1 relative pb-16 rounded-xl ">
+                <SheetMusic id="task" notation={playerTaskString + abcNoteString} />
                 <button
                   disabled={playerTaskString === "" || taskFinished}
                   onClick={() => deleteLastNote()}
-                  className="absolute bottom-4 right-4 "
+                  className="absolute bottom-2 right-2 "
                 >
                   Delete Last Note
                   <br />
@@ -187,8 +222,6 @@ export default function Gameplay() {
                 </button>
               </div>
             </div>
-
-            <QuestPane taskFinished={taskFinished} />
           </div>
         </div>
 
@@ -240,8 +273,8 @@ export default function Gameplay() {
                   >
                     <option value="scientific">Scientific</option>
                     <option value="chromatic">Chromatic</option>
-                    {/* <option value="abc">ABC Notation</option>
-                       <option value="standart">Do-Re-Mi Notation</option> */}
+                    <option value="do-re-mi">do-re-mi Notation</option>
+                    {/* <option value="abc">ABC Notation</option> */}
                   </select>
                 </div>
               </div>

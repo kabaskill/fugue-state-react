@@ -18,7 +18,7 @@ const modalVariants = {
   },
 };
 
-const Modal = ({ showModal, closeModal, showXButton = true, children }) => {
+const Modal = ({ showModal, closeModal, showXButton = true, flexible = false, children }) => {
   return (
     <>
       {showModal && (
@@ -29,7 +29,12 @@ const Modal = ({ showModal, closeModal, showXButton = true, children }) => {
           animate="visible"
           exit="hidden"
         >
-          <motion.div className="modal" variants={modalVariants} initial="hidden" animate="visible">
+          <motion.div
+            className={`${flexible ? "flex-modal" : "modal"}`}
+            variants={modalVariants}
+            initial="hidden"
+            animate="visible"
+          >
             {children}
             {showXButton && (
               <button

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { optionsState } from "../data/gameState";
 
 import { Chord, Note } from "tonal";
@@ -53,6 +53,18 @@ export default function ChromaFlower() {
     });
   }
 
+  const openingMusic = [
+    ["C4", "F4", "A4", "C5"],
+    ["G4", "D4", "B4", "B5"],
+    ["C4", "E4", "G4", "C5"],
+  ];
+
+  useEffect(() => {
+    openingMusic.forEach((notes, index) =>
+      setTimeout(() => notes.forEach((note) => pianoOnce(note, 1.4)), index * 1500)
+    );
+  }, []);
+
   return (
     <div className="flex flex-col size-full">
       <svg
@@ -77,7 +89,7 @@ export default function ChromaFlower() {
                 style={{
                   transition: "opacity 500ms ease-out",
                   cursor: "pointer",
-                  opacity: isPlaying ? "1" : "0.25",
+                  opacity: isPlaying ? "1" : "0.35",
                 }}
               >
                 <g transform={` rotate(${index * 30}) translate(0, -${size / 8}) `}>
@@ -97,7 +109,11 @@ export default function ChromaFlower() {
                     dominantBaseline="middle"
                     transform={`rotate(${index * -30})`}
                   >
-                    {optionsState.value.notation === "chromatic" ? index : note}
+                    {optionsState.value.notation === "chromatic"
+                      ? index
+                      : optionsState.value.notation === "do-re-mi"
+                      ? optionsState.value.doremiArray[index]
+                      : note}
                   </text>
                   {isPlaying && <circle cx="0" cy={pad} r={size / 40} fill={notes[note]} />}
                 </g>

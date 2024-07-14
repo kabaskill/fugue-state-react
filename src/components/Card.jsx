@@ -77,7 +77,9 @@ export default function Card({ card, idSuffix = "", isSelected, onSelect }) {
           >
             {optionsState.value.notation === "chromatic"
               ? chromaticIndex
-              : `${card.note}${card.octave}`}
+              : optionsState.value.notation === "do-re-mi"
+              ? optionsState.value.doremiArray[chromaticIndex] + card.octave
+              : card.note + card.octave}
           </text>
         </svg>
 
