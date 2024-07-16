@@ -8,6 +8,8 @@ export default function QuestPane() {
   const [dialogIndex, setDialogindex] = useState(0);
   const [showModal, setShowModal] = useState(true);
 
+  const level = levels.value
+
   return (
     <>
       <Modal
@@ -22,9 +24,9 @@ export default function QuestPane() {
           <div className="bg-slate-200 shadow-black shadow-lg w-3/5 h-1/3 text-center rounded-3xl relative left-80 top-48">
             <div className="h-full w-4/5 flex justify-center items-center mx-auto">
               <p className="text-3xl px-4 pb-16 ">
-                {levels[gameState.value.currentLevel].dialog[dialogIndex]}
+                {level[gameState.value.currentLevel].dialog[dialogIndex]}
               </p>
-              {dialogIndex === levels[gameState.value.currentLevel].dialog.length - 1 && (
+              {dialogIndex === level[gameState.value.currentLevel].dialog.length - 1 && (
                 <button
                   className="absolute top-2 right-2 rounded-full  "
                   onClick={() => {
@@ -47,10 +49,10 @@ export default function QuestPane() {
               </button>
 
               <button
-                disabled={dialogIndex === levels[gameState.value.currentLevel].dialog.length - 1}
+                disabled={dialogIndex === level[gameState.value.currentLevel].dialog.length - 1}
                 onClick={() =>
-                  dialogIndex === levels[gameState.value.currentLevel].dialog.length - 1
-                    ? setDialogindex(levels[gameState.value.currentLevel].dialog.length - 1)
+                  dialogIndex === level[gameState.value.currentLevel].dialog.length - 1
+                    ? setDialogindex(level[gameState.value.currentLevel].dialog.length - 1)
                     : setDialogindex(dialogIndex + 1)
                 }
               >

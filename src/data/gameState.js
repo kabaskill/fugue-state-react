@@ -36,17 +36,50 @@ const mappedNotes = (startKey) => {
 const coloredNotes = mappedNotes("A");
 
 const card = (note, octave, cost = 1, unlocked = true) => ({
-  id: randomId("card"),
+  id: randomId("note-card"),
   unlocked,
   note,
   octave,
   color: coloredNotes[note],
-  description: `Plays `,
   cost,
 });
 
-const noteDeck = (allNotes) => {
-  return Object.keys(allNotes).flatMap((note) => [card(note, 4), card(note, 5)]);
+const powerCard = (power, cost = 1, unlocked = true) => ({
+  id: randomId("power-card"),
+  unlocked,
+  color: "red",
+  cost,
+  power,
+});
+
+const powers = [
+  { addEnergy: (value, energy) => energy + value, desc: "Increase Energy by 1" },
+  { addMaxEnergy: (value, maxEnergy) => maxEnergy + value, desc: "Increase Max Energy by 1" },
+  { createNoteInHand: (note, octave) => card(note, octave), desc: "Create Note Card in Hand" },
+  {
+    undoChord: (chordString) => chordString.splice(0, chordString.length - 1),
+    desc: "Undo last played chord",
+  },
+];
+
+const powerDeck = () => {
+  const powersDeck = [];
+  for (let i = 0; i < 2; i++) {
+    for (let j = 0; j < powers.length; j++) {
+      powersDeck.push(powerCard(powers[j]));
+    }
+  }
+  return powersDeck;
+};
+
+console.log("🚀  powerDeck:", powerDeck());
+
+const noteDeck = () => {
+  const noteDeck = [];
+  for (let i = 0; i < 12; i++) {
+    noteDeck.push(card("A", 4));
+  }
+  return noteDeck;
 };
 
 const drawHand = (deck, handSize) => {
@@ -72,12 +105,14 @@ const defaultOptionsState = {
 };
 
 const initialDeck = shuffleArray(noteDeck(defaultOptionsState.allNotes));
-const initialHand = drawHand(initialDeck, 7);
+const initialHand = drawHand(initialDeck, 3);
 
 const defaultPlayerState = {
   deck: initialDeck,
   hand: initialHand,
-  handSize: 7,
+  handSize: 3,
+  energy: 0,
+  maxEnergy: 5,
   totalEnergySpent: 0,
 };
 

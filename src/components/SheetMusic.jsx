@@ -14,7 +14,8 @@ export default function SheetMusic({ id, title = "", notation, noteLength = "1",
     timeoutsRef.current = [];
 
     releaseAllNotes();
-    const chordsRemoved = abcNotes.replace(/(["'])(?:(?=(\\?))\2.)*?\1/g, "");
+    const chordsRemoved = abcNotes.replace(/".*?"|'.*?'/g, "").replace(/\[|\]/g, "");
+    console.log("🚀  chordsRemoved:", chordsRemoved);
     const notes = [];
     for (let i = 0; i < chordsRemoved.length; i++) {
       const note = AbcNotation.abcToScientificNotation(chordsRemoved[i]);

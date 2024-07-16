@@ -61,6 +61,20 @@ p {
   font-size: x-large;
 }
 
+.card {
+  background-color: #b86cff;
+  position: relative;
+  max-width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  aspect-ratio: 8/11;
+  border: 2px solid lightblue;
+  border-radius: 8px;
+}
+
 .backdrop {
   position: fixed;
   top: 0;

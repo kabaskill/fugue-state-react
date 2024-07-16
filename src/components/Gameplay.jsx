@@ -41,7 +41,7 @@ export default function Gameplay() {
   const [activeId, setActiveId] = useState(null);
   const [isDeckOpen, setIsDeckOpen] = useState(false);
 
-  const levelInfo = levels[gameState.value.currentLevel];
+  const levelInfo = levels.value[gameState.value.currentLevel];
   const [levelEnergy, setLevelEnergy] = useState(0);
   const [playerTaskString, setPlayerTaskString] = useState("");
   const [taskFinished, setTaskFinished] = useState(false);

@@ -84,7 +84,6 @@ export function PianoProvider({ children }) {
   const releaseAllNotes = () => {
     setActiveNotes([]);
     piano.releaseAll();
-    console.log("asdfasdfasdfasdf")
   };
 
   const playKey = useCallback(
