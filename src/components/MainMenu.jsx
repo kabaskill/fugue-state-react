@@ -3,7 +3,7 @@ import ChromaFlower from "./ChromaFlower";
 
 export default function MainMenu() {
   return (
-    <section className="size-4/5 m-auto flex justify-around items-center gap-16">
+    <section className="w-4/5 h-2/3 m-auto flex justify-around items-center gap-16">
       <div className="h-full aspect-square">
         <ChromaFlower />
       </div>

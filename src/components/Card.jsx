@@ -3,9 +3,9 @@ import { CSS } from "@dnd-kit/utilities";
 import { motion } from "framer-motion";
 import { usePiano } from "./PianoProvider";
 import { optionsState } from "../data/gameState";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-export default function Card({ card, idSuffix = "", isSelected, onSelect, onDeck }) {
+export default function Card({ card, idSuffix = "", isSelected, onSelect }) {
   const chromaticIndex = Object.keys(optionsState.value.allNotes).findIndex(
     (index) => index === card.note
   );
@@ -22,18 +22,12 @@ export default function Card({ card, idSuffix = "", isSelected, onSelect, onDeck
   const { pianoOnce } = usePiano();
 
   const style = {
-    height: "100%",
+    height:"100%",
     transition,
     transform: CSS.Transform.toString(transform),
     zIndex: isDragging ? 1000 : undefined,
     opacity: isDragging ? 0.25 : undefined,
   };
-
-  useEffect(() => {
-    if (onDeck) {
-      setEdited(true);
-    }
-  }, [onDeck]);
 
   const handleCardClick = () => {
     if (!isDragging && !isEditing) {
@@ -224,10 +218,13 @@ export default function Card({ card, idSuffix = "", isSelected, onSelect, onDeck
             </div>
           </div>
         ) : (
-          <div className="text-center px-4 mx-4 bg-slate-300 rounded-md">
-            <p className="text-xl">Note Card:</p>
-            <p className="text-lg">Play or discard the note</p>
-          </div>
+          <>
+            <p className="text-lg ">Octave: {editedCard.octave}</p>
+            <div className="text-center px-4 mx-4 bg-slate-200 rounded-md">
+              {/* <p className="text-xl">Note Card:</p> */}
+              <p className="text-base">Play or discard the note</p>
+            </div>
+          </>
         )}
       </motion.div>
     </div>

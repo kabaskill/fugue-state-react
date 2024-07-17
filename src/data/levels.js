@@ -12,15 +12,17 @@ effect(() => {
 
   const rootPitchClass = Note.pitchClass(rootNote);
 
-  const abcChord = (noteArray) =>
-    noteArray.map((note) => AbcNotation.scientificToAbcNotation(note)).join("");
+  const abcChord = (noteArray) => {
+    const chord = noteArray.map((note) => AbcNotation.scientificToAbcNotation(note)).join("");
+    return "[" + chord + "]";
+  };
 
   levels.value = [
     {
       title: "First Chord",
       noteLength: "1",
-      taskAbcString: `"${rootPitchClass} major chord"[${abcChord(chordMajor)}]`,
-      taskCheckString: abcChord(chordMajor),
+      taskAbc: `"${rootPitchClass} major chord"${abcChord(chordMajor)}`,
+      taskCheck: abcChord(chordMajor),
       dialog: [
         "This is Fugue Machine, one of my inventions...",
         "The display is divided to three sections: Chroma Flower, Sheet music and Card Container ...",

@@ -3,6 +3,8 @@ import Modal from "./Modal";
 import { optionsState } from "../data/gameState";
 import randomId from "../utils/randomId";
 
+import { LazyLoadImage } from "react-lazy-load-image-component";
+
 export default function Options() {
   return (
     <Modal
@@ -11,7 +13,7 @@ export default function Options() {
         optionsState.value = { ...optionsState.value, isActive: false };
       }}
     >
-      <div className="w-full h-full flex flex-col gap-16">
+      <div className="size-full flex flex-col gap-16">
         <h1 className="">OPTIONS</h1>
 
         <div className="w-4/5 flex flex-col flex-1 self-center gap-8">
@@ -81,6 +83,15 @@ export default function Options() {
                 </select>
               </div>
             </div>
+          </div>
+
+          <div className="flex flex-col  justify-center items-center">
+            <h2>Key Bindings</h2>
+            <LazyLoadImage
+              src={`${import.meta.env.BASE_URL}/images/Keyboard.png`}
+              alt="keyboard"
+              width={600}
+            />
           </div>
         </div>
       </div>

@@ -53,17 +53,17 @@ export default function ChromaFlower() {
     });
   }
 
-  const openingMusic = [
-    ["C4", "F4", "A4", "C5"],
-    ["G4", "D4", "B4", "B5"],
-    ["C4", "E4", "G4", "C5"],
-  ];
+  // const openingMusic = [
+  //   ["C4", "F4", "A4", "C5"],
+  //   ["G4", "D4", "B4", "B5"],
+  //   ["C4", "E4", "G4", "C5"],
+  // ];
 
-  useEffect(() => {
-    openingMusic.forEach((notes, index) =>
-      setTimeout(() => notes.forEach((note) => pianoOnce(note, 1.4)), index * 1500)
-    );
-  }, []);
+  // useEffect(() => {
+  //   openingMusic.forEach((notes, index) =>
+  //     setTimeout(() => notes.forEach((note) => pianoOnce(note, 1.4)), index * 1500)
+  //   );
+  // }, []);
 
   return (
     <div className="flex flex-col size-full">

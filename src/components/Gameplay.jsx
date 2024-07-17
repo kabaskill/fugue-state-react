@@ -7,15 +7,16 @@ import { CustomPointerSensor } from "../utils/CustomPointerSensor";
 import Card from "./Card";
 import Deck from "./Deck";
 import SheetMusic from "./SheetMusic";
+import QuestPane from "./QuestPane";
+import PowerCard from "./PowerCard";
+import { usePiano } from "./PianoProvider";
 
 const ChromaFlower = React.lazy(() => import("./ChromaFlower"));
 
 import { gameState, optionsState, playerState } from "../data/gameState";
-import QuestPane from "./QuestPane";
 import randomId from "../utils/randomId";
 import { levels } from "../data/levels";
 import { AbcNotation, Note } from "tonal";
-import { usePiano } from "./PianoProvider";
 import { motion } from "framer-motion";
 
 export default function Gameplay() {
@@ -42,38 +43,21 @@ export default function Gameplay() {
   const [isDeckOpen, setIsDeckOpen] = useState(false);
 
   const levelInfo = levels.value[gameState.value.currentLevel];
-  const [levelEnergy, setLevelEnergy] = useState(0);
   const [playerTaskString, setPlayerTaskString] = useState("");
   const [taskFinished, setTaskFinished] = useState(false);
 
   useEffect(() => {
-    if (playerTaskString === levelInfo.taskCheckString) {
+    if (playerTaskString === levelInfo.taskCheck) {
       setTaskFinished(true);
     }
-  }, [playerTaskString, levelInfo.taskCheckString]);
+  }, [playerTaskString, levelInfo.taskCheck]);
 
-  function increaseEnergy(cost) {
-    setLevelEnergy((prev) => prev + cost);
-    playerState.value.totalEnergySpent = playerState.value.totalEnergySpent + cost;
-  }
-
-  function deleteLastNote() {
-    if (playerTaskString === "") {
-      return;
-    }
-
-    if (!taskFinished) {
-      setPlayerTaskString((prev) => {
-        if (prev[prev.length - 2] === "^") {
-          return prev.slice(0, -2);
-        } else {
-          return prev.slice(0, -1);
-        }
-      });
-
-      increaseEnergy(1);
-    }
-  }
+  useEffect(() => {
+    playerState.value = {
+      ...playerState.value,
+      deck: [...playerState.value.deck, ...playerState.value.discardPile],
+    };
+  }, []);
 
   function handleDragStart(event) {
     const { active } = event;
@@ -111,39 +95,81 @@ export default function Gameplay() {
 
     const newHand = [...playerState.value.hand];
     const playedCards = [];
-    const newDeck = [...playerState.value.deck];
+    const newDiscardPile = [...playerState.value.discardPile];
+
+    let chordPlayed = "";
 
     selectedCardIds.forEach((cardId) => {
       const cardIndex = newHand.findIndex((card) => card.id === cardId);
       if (cardIndex !== -1) {
-        const [card] = newHand.splice(cardIndex, 1);
-        playedCards.push(card);
+        const card = newHand[cardIndex];
 
         if (playOrDiscard === "play" && !taskFinished) {
-          const playedNote = AbcNotation.scientificToAbcNotation(card.note + card.octave);
-          setPlayerTaskString((prev) => prev + playedNote);
-          increaseEnergy(card.cost);
+          if (card.type === "note") {
+            const playedNote = AbcNotation.scientificToAbcNotation(card.note + card.octave);
+            chordPlayed += playedNote;
+          } else if (card.power.name === "Undo Chord") {
+            setPlayerTaskString(card.power.effect(playerTaskString));
+          } else {
+            const updatedState = card.power.effect(playerState.value);
+            newHand.push(
+              ...updatedState.hand.filter(
+                (c) => !newHand.some((existingCard) => existingCard.id === c.id)
+              )
+            );
+            playerState.value = updatedState;
+          }
         }
+
+        newHand.splice(cardIndex, 1);
+        playedCards.push(card);
       }
     });
 
-    if (playOrDiscard === "discard" && !taskFinished) {
-      increaseEnergy(1);
+    chordPlayed = "[" + chordPlayed + "]";
+    setPlayerTaskString((prev) => prev + chordPlayed);
+    newDiscardPile.push(...playedCards);
+
+    playerState.value = {
+      ...playerState.value,
+      hand: newHand,
+      discardPile: newDiscardPile,
+    };
+
+    drawNewCards();
+    setSelectedCards(new Set());
+  }
+
+  function drawNewCards() {
+    const { deck, hand, handNotes, handPowers } = playerState.value;
+    let newHand = [...hand];
+    let newDeck = [...deck];
+
+    const drawNoteCards = handNotes - newHand.filter((c) => c.type === "note").length;
+    for (let i = 0; i < drawNoteCards; i++) {
+      if (newDeck.length === 0) break;
+      const card = newDeck.find((c) => c.type === "note");
+      if (card) {
+        newHand.push(card);
+        newDeck = newDeck.filter((c) => c.id !== card.id);
+      }
     }
 
-    while (newHand.length < playerState.value.handSize && newDeck.length > 0) {
-      newHand.push(newDeck.shift());
+    const drawPowerCards = handPowers - newHand.filter((c) => c.type === "power").length;
+    for (let i = 0; i < drawPowerCards; i++) {
+      if (newDeck.length === 0) break;
+      const card = newDeck.find((c) => c.type === "power");
+      if (card) {
+        newHand.push(card);
+        newDeck = newDeck.filter((c) => c.id !== card.id);
+      }
     }
-
-    newDeck.push(...playedCards);
 
     playerState.value = {
       ...playerState.value,
       hand: newHand,
       deck: newDeck,
     };
-
-    setSelectedCards(new Set());
   }
 
   return (
@@ -156,11 +182,12 @@ export default function Gameplay() {
       <div className="grid grid-cols-6 grid-rows-3 size-full relative">
         <Deck
           cards={playerState.value.deck}
+          discardPile={playerState.value.discardPile}
           showModal={isDeckOpen}
           closeModal={() => setIsDeckOpen(false)}
         />
 
-        <QuestPane  />
+        <QuestPane />
 
         {taskFinished && (
           <button
@@ -204,22 +231,17 @@ export default function Gameplay() {
                 <SheetMusic
                   id={levelInfo.title}
                   title={levelInfo.title}
-                  notation={levelInfo.taskAbcString}
+                  notation={levelInfo.taskAbc}
                   isTask
                 />
               </div>
 
               <div className="bg-slate-100 flex-1 relative pb-16 rounded-xl ">
-                <SheetMusic id="task" notation={playerTaskString + abcNoteString} />
-                <button
-                  disabled={playerTaskString === "" || taskFinished}
-                  onClick={() => deleteLastNote()}
-                  className="absolute bottom-2 right-2 "
-                >
-                  Delete Last Note
-                  <br />
-                  (1 Energy)
-                </button>
+                <SheetMusic
+                  id="task"
+                  title="Player's Music"
+                  notation={playerTaskString + abcNoteString}
+                />
               </div>
             </div>
           </div>
@@ -228,9 +250,9 @@ export default function Gameplay() {
         {/*CARD CONTAINER*/}
         <div className="bg-slate-600 row-span-1 col-span-6 flex ">
           <div className="w-[15%] flex flex-col justify-center items-center gap-4 ">
-            <p className="text-white font-bold text-2xl">Energy: {levelEnergy}</p>
-            <p className="text-white font-bold text-2xl">
-              Total Energy Spent: {playerState.value.totalEnergySpent}
+            <p className="text-white font-bold text-2xl text-center">
+              Energy:
+              <br /> {playerState.value.energy} / {playerState.value.maxEnergy}
             </p>
 
             <div className="flex flex-col w-full bg-slate-400  gap-4 p-4 ">
@@ -283,14 +305,29 @@ export default function Gameplay() {
 
           <SortableContext items={items.value} strategy={horizontalListSortingStrategy}>
             <ul className="w-[65%] h-full flex justify-center items-center p-4  gap-4 bg-slate-700">
-              {items.value.map((card) => (
-                <Card
-                  key={card.id}
-                  card={card}
-                  isSelected={selectedCards.has(card.id)}
-                  onSelect={() => handleCardSelection(card.id)}
-                />
-              ))}
+              {items.value.map((card) => {
+                if (card.type === "note") {
+                  return (
+                    <Card
+                      key={card.id}
+                      card={card}
+                      isSelected={selectedCards.has(card.id)}
+                      onSelect={() => handleCardSelection(card.id)}
+                    />
+                  );
+                }
+
+                if (card.type === "power") {
+                  return (
+                    <PowerCard
+                      key={card.id}
+                      card={card}
+                      isSelected={selectedCards.has(card.id)}
+                      onSelect={() => handleCardSelection(card.id)}
+                    />
+                  );
+                }
+              })}
             </ul>
           </SortableContext>
 
@@ -314,7 +351,8 @@ export default function Gameplay() {
               onClick={() => setIsDeckOpen(true)}
             >
               Show <br />
-              Deck
+              Deck:
+              {playerState.value.deck.length}
             </button>
           </div>
         </div>
@@ -322,7 +360,11 @@ export default function Gameplay() {
 
       <DragOverlay>
         {activeId ? (
-          <Card card={items.value.find((item) => item.id === activeId)} idSuffix="-clone" />
+          items.value.find((item) => item.id === activeId).type === "note" ? (
+            <Card card={items.value.find((item) => item.id === activeId)} idSuffix="-clone" />
+          ) : (
+            <PowerCard card={items.value.find((item) => item.id === activeId)} idSuffix="-clone" />
+          )
         ) : null}
       </DragOverlay>
     </DndContext>
