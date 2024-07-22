@@ -38,10 +38,18 @@ const Modal = ({ showModal, closeModal, showXButton = true, flexible = false, ch
             {children}
             {showXButton && (
               <button
-                className="absolute top-[-3rem] right-[-3rem] rounded-full text-white "
-                onClick={closeModal}
+                onClick={() => closeModal()}
+                className="z-50 absolute top-[1rem] right-[1rem] p-2 bg-red-500 text-white rounded-full hover:bg-red-400"
               >
-                X
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4 hover:scale-110"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             )}
           </motion.div>

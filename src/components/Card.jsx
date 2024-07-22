@@ -22,10 +22,10 @@ export default function Card({ card, idSuffix = "", isSelected, onSelect }) {
   const { pianoOnce } = usePiano();
 
   const style = {
-    height:"100%",
+    height: "100%",
     transition,
     transform: CSS.Transform.toString(transform),
-    zIndex: isDragging ? 1000 : undefined,
+    zIndex: isDragging || isSelected ? 1000 : undefined,
     opacity: isDragging ? 0.25 : undefined,
   };
 
@@ -101,7 +101,7 @@ export default function Card({ card, idSuffix = "", isSelected, onSelect }) {
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <motion.div
         animate={{ y: isSelected ? -35 : 0 }}
-        whileHover={{ scale: 1.05 }}
+        whileHover={{ scale: 1.05, zIndex: 1000 }}
         className={`card ${!isEditing && ""}`}
         onClick={handleCardClick}
       >

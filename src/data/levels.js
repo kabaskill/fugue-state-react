@@ -4,48 +4,61 @@ import { effect, signal } from "@preact/signals-react";
 
 export const levels = signal([]);
 
+const chordBuilder = (note, str) => {
+  switch (str) {
+    case "major":
+      return Chord.notes("M", note);
+    case "minor":
+      return Chord.notes("m", note);
+    default:
+      return Chord.notes("M", note);
+  }
+};
+
 effect(() => {
   const rootMidi = Note.midi(optionsState.value.rootNote + 4);
-  const rootNote = Note.fromMidi(rootMidi);
-  const chordMajor = Chord.notes("M", rootNote);
-  // const chordMinor = Chord.notes("m", rootNote);
 
+  const rootNote = Note.fromMidiSharps(rootMidi);
   const rootPitchClass = Note.pitchClass(rootNote);
 
   const abcChord = (noteArray) => {
-    const chord = noteArray.map((note) => AbcNotation.scientificToAbcNotation(note)).join("");
-    return "[" + chord + "]";
+    return noteArray.map((note) => AbcNotation.scientificToAbcNotation(note));
   };
 
   levels.value = [
     {
       title: "First Chord",
       noteLength: "1",
-      taskAbc: `"${rootPitchClass} major chord"${abcChord(chordMajor)}`,
-      taskCheck: abcChord(chordMajor),
+      taskAbc: `"C major chord"[${abcChord(chordBuilder("C4", "major")).join("")}]`,
+      taskCheck: chordBuilder("C4", "major"),
       dialog: [
         "This is Fugue Machine, one of my inventions...",
-        "The display is divided to three sections: Chroma Flower, Sheet music and Card Container ...",
-        "On the left side, is the Chroma Flower, it will highlight the notes you are playing...",
-        "On the right side, is your goal and your empty sheet music...",
-        "Your task is to use your cards, which are located on bottom to imitate the sheet music on the goal...",
-        "You can change your Root note and preferred notation on the left side or in the Options menu...",
-        "Click on the cards to highlight them and either play or discard them to your liking...",
-        "You can drag the cards to sort them...",
+        "It is a machine that helps you practice music. The display is divided to three sections...",
+        "On the left, is the Chroma Flower. It is just like a piano but on a circle and with colors. It will highlight any note that is playing.",
+        "Just try it! You can interact with it with your keyboard or mouse...",
+        "On the right, is your Sheet Music...",
+        "The top one is your task sheet and the bottom one is your empty sheet.",
+        "Like Chroma Flower your Sheet Music will react to what notes are playing.",
+
+        "You use your cards located on the bottom to interact with the Sheet Music ...",
+        "There are 2 types of Cards. Notes and Powers...",
+        "Select the cards by clicking and either play or discard them by clicking the buttons on the right.",
+        "Note Cards add notes or chords to your sheet music while each power card has a separate effect.",
+
+        "Don't forget to asign a note to your note card however. You do this by playing any note when a note card is selected.",
+
         "Don't worry about the rest for now, just try it out an experiment!",
       ],
     },
     {
-      title: "Learning the Intervals",
+      title: "First Chord",
       noteLength: "1",
-      taskAbcString: '"unison"[AA]"2nd"[AB]"3rd"[Ac]"4th"[Ad]"5th"[Ae]"6th"[Af]"7th"[Ag]',
-      taskCheckString: "ABcdefg",
+      taskAbc: `"A minor chord" [${abcChord(chordBuilder("A3", "minor")).join("")}]`,
+      taskCheck: chordBuilder("A3", "minor"),
       dialog: [
-        "Let's look at something more complex...",
-        "... Intervals!",
-        "If 2 notes play at the same time, that is called an interval...",
-        "I put some intervals for you to practice...",
-        "Just like last time, play your cards and try to imitate the task. The note A is repeating so don't worry about it. Only play it first time. Then, only the other note.",
+        "This time we look at a different type of chord...",
+        "A minor chord. It's not only a minor chord...",
+        "It is 'A' minor chord.",
       ],
     },
   ];

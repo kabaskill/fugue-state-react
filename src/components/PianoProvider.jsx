@@ -65,23 +65,35 @@ export function PianoProvider({ children }) {
     };
   }, []);
 
-  const playNote = (note) => {
+  const playNote = useCallback((note) => {
     setActiveNotes((prev) => [...prev, Note.midi(note)].sort((a, b) => a - b));
-  };
+  }, []);
 
-  const releaseNote = (note) => {
+  const releaseNote = useCallback((note) => {
     setActiveNotes((prev) => prev.filter((n) => n !== Note.midi(note)).sort((a, b) => a - b));
-  };
+  }, []);
+
+  const addActiveNote = useCallback((note) => {
+    setActiveNotes((prev) => [...prev, Note.midi(note)]);
+  }, []);
+
+  const removeActiveNote = useCallback((note) => {
+    setActiveNotes((prev) => prev.filter((n) => n !== Note.midi(note)));
+  }, []);
 
   const pianoOnce = (note, duration = 3) => {
     if (!piano) return;
 
-    piano.triggerAttackRelease(note, duration);
-    playNote(note);
-    setTimeout(() => releaseNote(note), duration * 1000);
+    const noteOctave = +note.slice(-1) + +offset;
+    const noteToPlay = note.slice(0, -1) + noteOctave;
+
+    piano.triggerAttackRelease(noteToPlay, duration);
+    playNote(noteToPlay);
+    setTimeout(() => releaseNote(noteToPlay), duration * 1000);
   };
 
   const releaseAllNotes = () => {
+    if (!piano) return;
     setActiveNotes([]);
     piano.releaseAll();
   };
@@ -116,7 +128,18 @@ export function PianoProvider({ children }) {
   }, [piano, playKey, changeOffset]);
 
   return (
-    <PianoContext.Provider value={{ pianoOnce, playKey, releaseAllNotes, offset, activeNotes }}>
+    <PianoContext.Provider
+      value={{
+        piano,
+        pianoOnce,
+        releaseAllNotes,
+        addActiveNote,
+        removeActiveNote,
+        offset,
+        changeOffset,
+        activeNotes,
+      }}
+    >
       {children}
     </PianoContext.Provider>
   );

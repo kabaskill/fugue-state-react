@@ -17,7 +17,7 @@ export default function Options() {
         <h1 className="">OPTIONS</h1>
 
         <div className="w-4/5 flex flex-col flex-1 self-center gap-8">
-          <div className="flex justify-between p-2">
+          <div className="flex justify-between">
             <label htmlFor="volume-slider">Volume</label>
             <input
               type="range"
@@ -30,7 +30,7 @@ export default function Options() {
             />
           </div>
 
-          <div className="flex justify-between p-2">
+          <div className="flex justify-between">
             <label htmlFor="volume-mute">Mute</label>
             <input
               type="checkbox"
@@ -42,11 +42,10 @@ export default function Options() {
             />
           </div>
 
-          <div className="flex flex-col bg-slate-200  gap-4 p-2 pb-4">
-            <h2>Notation</h2>
+          <div className="flex  justify-between w-full ">
 
-            <div className="px-8 flex justify-around">
-              <div className="flex flex-col justify-center items-center">
+            <div className=" flex flex-col justify-around h-full ">
+              <div className="flex flex-col justify-center  ">
                 <label htmlFor="root-note">RootNote</label>
                 <select
                   name="root-note"
@@ -66,7 +65,7 @@ export default function Options() {
                 </select>
               </div>
 
-              <div className="flex flex-col justify-center items-center">
+              <div className="flex flex-col justify-center ">
                 <label htmlFor="notation">Select the Notation Type</label>
                 <select
                   name="notation"
@@ -83,15 +82,15 @@ export default function Options() {
                 </select>
               </div>
             </div>
-          </div>
 
-          <div className="flex flex-col  justify-center items-center">
-            <h2>Key Bindings</h2>
-            <LazyLoadImage
-              src={`${import.meta.env.BASE_URL}/images/Keyboard.png`}
-              alt="keyboard"
-              width={600}
-            />
+            <div className="w-3/5 flex flex-col  justify-center ">
+              <h2>Key Bindings</h2>
+              <LazyLoadImage
+                src={`${import.meta.env.BASE_URL}/images/Keyboard.png`}
+                alt="keyboard"
+                className=""
+              />
+            </div>
           </div>
         </div>
       </div>

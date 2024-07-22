@@ -11,7 +11,7 @@ export default function PowerCard({ card, idSuffix = "", isSelected, onSelect })
     height: "100%",
     transition,
     transform: CSS.Transform.toString(transform),
-    zIndex: isDragging ? 1000 : undefined,
+    zIndex: isDragging || isSelected ? 1000 : undefined,
     opacity: isDragging ? 0.25 : undefined,
   };
 
@@ -25,7 +25,7 @@ export default function PowerCard({ card, idSuffix = "", isSelected, onSelect })
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <motion.div
         animate={{ y: isSelected ? -35 : 0 }}
-        whileHover={{ scale: 1.05 }}
+        whileHover={{ scale: 1.05, zIndex: 1000 }}
         className="card"
         onClick={handleCardClick}
       >
@@ -55,16 +55,16 @@ export default function PowerCard({ card, idSuffix = "", isSelected, onSelect })
             y="50%"
             fill="white"
             fontFamily="monospace"
-            fontSize="0.4rem"
+            fontSize="0.7rem"
             fontWeight="bold"
           >
             Power
           </text>
         </svg>
-        <p className="text-lg ">{card.power.name}</p>
-        <div className="text-center px-4 mx-4 bg-slate-200 rounded-md">
+        <p>{card.power.name}</p>
+        <div className=" w-5/6 h-1/4 px-4 bg-slate-200 rounded-md flex justify-center items-center text-center">
           {/* <p className="text-xl">Note Card:</p> */}
-          <p className="text-base">{card.power.desc}</p>
+          <p className="text-lg">{card.power.desc}</p>
         </div>
       </motion.div>
     </div>

@@ -4,7 +4,7 @@ import { closestCenter, DndContext, DragOverlay, useSensor, useSensors } from "@
 import { arrayMove, horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { CustomPointerSensor } from "../utils/CustomPointerSensor";
 
-import Card from "./Card";
+import CardNew from "./CardNew";
 import Deck from "./Deck";
 import SheetMusic from "./SheetMusic";
 import QuestPane from "./QuestPane";
@@ -23,9 +23,9 @@ export default function Gameplay() {
   const sensors = useSensors(
     useSensor(CustomPointerSensor, {
       activationConstraint: {
-        delay: 100,
+        delay: 200,
         distance: 20,
-        tolerance: 50,
+        tolerance: 5,
       },
     })
   );
@@ -37,27 +37,17 @@ export default function Gameplay() {
     .join("")}]`;
 
   const items = computed(() => playerState.value.hand);
-  const [selectedCards, setSelectedCards] = useState(new Set());
+  const [selectedCards, setSelectedCards] = useState([]);
 
   const [activeId, setActiveId] = useState(null);
   const [isDeckOpen, setIsDeckOpen] = useState(false);
 
   const levelInfo = levels.value[gameState.value.currentLevel];
-  const [playerTaskString, setPlayerTaskString] = useState("");
+  const [playerTaskArray, setPlayerTaskArray] = useState([]);
+  const [playerTurnArray, setPlayerTurnArray] = useState([]);
+
   const [taskFinished, setTaskFinished] = useState(false);
-
-  useEffect(() => {
-    if (playerTaskString === levelInfo.taskCheck) {
-      setTaskFinished(true);
-    }
-  }, [playerTaskString, levelInfo.taskCheck]);
-
-  useEffect(() => {
-    playerState.value = {
-      ...playerState.value,
-      deck: [...playerState.value.deck, ...playerState.value.discardPile],
-    };
-  }, []);
+  const [playerAbc, setPlayerAbc] = useState("");
 
   function handleDragStart(event) {
     const { active } = event;
@@ -78,66 +68,82 @@ export default function Gameplay() {
     setActiveId(null);
   }
 
-  const handleCardSelection = (cardId) => {
+  function handleCardSelection(cardId) {
     setSelectedCards((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(cardId)) {
-        newSet.delete(cardId);
+      const selectedCard = items.value.find((card) => card.id === cardId);
+
+      if (prev.includes(cardId)) {
+        return prev.filter((id) => id !== cardId);
       } else {
-        newSet.add(cardId);
+        const otherTypeSelected = prev.some(
+          (id) => items.value.find((card) => card.id === id)?.type !== selectedCard.type
+        );
+
+        if (otherTypeSelected) {
+          return [cardId];
+        } else {
+          return [...prev, cardId];
+        }
       }
-      return newSet;
     });
-  };
+  }
 
   function handleTurn(playOrDiscard) {
-    const selectedCardIds = Array.from(selectedCards);
-
     const newHand = [...playerState.value.hand];
     const playedCards = [];
+    const playedNotes = [];
     const newDiscardPile = [...playerState.value.discardPile];
 
-    let chordPlayed = "";
-
-    selectedCardIds.forEach((cardId) => {
+    selectedCards.forEach((cardId, index) => {
       const cardIndex = newHand.findIndex((card) => card.id === cardId);
       if (cardIndex !== -1) {
         const card = newHand[cardIndex];
 
-        if (playOrDiscard === "play" && !taskFinished) {
+        if (playOrDiscard === "play") {
           if (card.type === "note") {
-            const playedNote = AbcNotation.scientificToAbcNotation(card.note + card.octave);
-            chordPlayed += playedNote;
-          } else if (card.power.name === "Undo Chord") {
-            setPlayerTaskString(card.power.effect(playerTaskString));
-          } else {
-            const updatedState = card.power.effect(playerState.value);
-            newHand.push(
-              ...updatedState.hand.filter(
-                (c) => !newHand.some((existingCard) => existingCard.id === c.id)
-              )
-            );
-            playerState.value = updatedState;
+            setPlayerTaskArray((prev) => [...prev, card.note + card.octave]);
+            playedNotes.push(card.note + card.octave);
+
+            if (index === selectedCards.length - 1) {
+              setPlayerTurnArray((prev) => [...prev, playedNotes]);
+            }
+          }
+
+          if (card.type === "power") {
+            if (card.power.name === "Undo Chord") {
+              setPlayerTaskArray((prev) =>
+                prev.slice(0, -playerTurnArray[playerTurnArray.length - 1].length)
+              );
+              setPlayerTurnArray((prev) => prev.slice(0, -1));
+            } else {
+              const updatedState = card.power.effect(playerState.value);
+              newHand.push(
+                ...updatedState.hand.filter(
+                  (c) => !newHand.some((existingCard) => existingCard.id === c.id)
+                )
+              );
+              playerState.value = updatedState;
+            }
           }
         }
-
         newHand.splice(cardIndex, 1);
         playedCards.push(card);
       }
     });
 
-    chordPlayed = "[" + chordPlayed + "]";
-    setPlayerTaskString((prev) => prev + chordPlayed);
     newDiscardPile.push(...playedCards);
 
     playerState.value = {
       ...playerState.value,
-      hand: newHand,
+      hand: [
+        ...newHand.filter((card) => card.type === "note"),
+        ...newHand.filter((card) => card.type === "power"),
+      ],
       discardPile: newDiscardPile,
     };
 
     drawNewCards();
-    setSelectedCards(new Set());
+    setSelectedCards([]);
   }
 
   function drawNewCards() {
@@ -171,6 +177,25 @@ export default function Gameplay() {
       deck: newDeck,
     };
   }
+
+  useEffect(() => {
+    playerState.value = {
+      ...playerState.value,
+      deck: [...playerState.value.deck, ...playerState.value.discardPile],
+    };
+  }, []);
+
+  useEffect(() => {
+    if (playerTaskArray.join("") === levelInfo.taskCheck.join("")) {
+      setTaskFinished(true);
+    }
+
+    const abcNotation = playerTurnArray
+      .map((turn) => `[${turn.map((note) => AbcNotation.scientificToAbcNotation(note)).join("")}]`)
+      .join("");
+
+    setPlayerAbc(abcNotation);
+  }, [playerTaskArray, playerTurnArray]);
 
   return (
     <DndContext
@@ -236,14 +261,15 @@ export default function Gameplay() {
                 />
               </div>
 
-              <div className="bg-slate-100 flex-1 relative pb-16 rounded-xl ">
-                <SheetMusic
-                  id="task"
-                  title="Player's Music"
-                  notation={playerTaskString + abcNoteString}
-                />
+              <div className="bg-slate-100 flex-1 relative rounded-xl ">
+                <SheetMusic id="task" title="Player's Music" notation={playerAbc + abcNoteString} />
               </div>
             </div>
+            {/* <div className="grid grid-cols-2 size-full">
+              <ChromaCircle notesArray={levelInfo.taskCheck} />
+
+              <ChromaCircle />
+            </div> */}
           </div>
         </div>
 
@@ -304,15 +330,18 @@ export default function Gameplay() {
           </div>
 
           <SortableContext items={items.value} strategy={horizontalListSortingStrategy}>
-            <ul className="w-[65%] h-full flex justify-center items-center p-4  gap-4 bg-slate-700">
+            <ul
+              className={`w-[65%] h-full  bg-slate-700 flex justify-center items-center p-4  gap-4`}
+            >
               {items.value.map((card) => {
                 if (card.type === "note") {
                   return (
-                    <Card
+                    <CardNew
                       key={card.id}
                       card={card}
-                      isSelected={selectedCards.has(card.id)}
+                      isSelected={selectedCards.includes(card.id)}
                       onSelect={() => handleCardSelection(card.id)}
+                      selectedIndex={selectedCards.indexOf(card.id)}
                     />
                   );
                 }
@@ -322,7 +351,7 @@ export default function Gameplay() {
                     <PowerCard
                       key={card.id}
                       card={card}
-                      isSelected={selectedCards.has(card.id)}
+                      isSelected={selectedCards.includes(card.id)}
                       onSelect={() => handleCardSelection(card.id)}
                     />
                   );
@@ -335,14 +364,14 @@ export default function Gameplay() {
             <button
               className="size-4/5"
               onClick={() => handleTurn("play")}
-              disabled={selectedCards.size === 0}
+              disabled={selectedCards.length === 0}
             >
               Play
             </button>
             <button
               className="size-4/5"
               onClick={() => handleTurn("discard")}
-              disabled={selectedCards.size === 0}
+              disabled={selectedCards.length === 0}
             >
               Discard
             </button>
@@ -361,7 +390,7 @@ export default function Gameplay() {
       <DragOverlay>
         {activeId ? (
           items.value.find((item) => item.id === activeId).type === "note" ? (
-            <Card card={items.value.find((item) => item.id === activeId)} idSuffix="-clone" />
+            <CardNew card={items.value.find((item) => item.id === activeId)} idSuffix="-clone" />
           ) : (
             <PowerCard card={items.value.find((item) => item.id === activeId)} idSuffix="-clone" />
           )

@@ -24,17 +24,20 @@ export default function App() {
   return (
     <>
       <Modal showModal={showModal} closeModal={() => setShowModal(false)} showXButton={false}>
-        <div className="h-full flex flex-col items-center justify-around gap-4 p-12">
-          <p className=" text-center text-xl">
-            Audio Engine needs to be loaded manually before you can start playing. <br /> Click the
-            button below to load the Audio Engine.
-            <br /> You can also use your keyboard as a piano once the Audio Engine is started.
-            <br /> Use black and white keys to play the notes. Yellow keys change the octave you are
-            playing. <br /> Optimized for desktop resolutions.
+        <div className="h-full w-full flex flex-col items-center justify-around ">
+          <p className="w-3/5">
+            Audio Engine needs to be loaded manually before you can start playing. Click the button
+            to load the Audio Engine. You can also use your keyboard as a piano once the Audio
+            Engine is started. Use black and white keys to play the notes. Yellow keys change the
+            octave you are playing. Optimized for desktop resolutions.
           </p>
 
+          <LazyLoadImage
+            src={`${import.meta.env.BASE_URL}/images/Keyboard.png`}
+            alt="keyboard"
+            className="w-4/5 aspect-auto"
+          />
           <button onClick={handleLoadPianoProvider}>Start Audio Engine</button>
-          <LazyLoadImage src={`${import.meta.env.BASE_URL}/images/Keyboard.png`} alt="keyboard" />
         </div>
       </Modal>
 

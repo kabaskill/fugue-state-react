@@ -1,7 +1,10 @@
+
 import { gameState, optionsState } from "../data/gameState";
 import ChromaFlower from "./ChromaFlower";
+import MidiPlayer from "./MidiPlayer";
 
 export default function MainMenu() {
+
   return (
     <section className="w-4/5 h-2/3 m-auto flex justify-around items-center gap-16">
       <div className="h-full aspect-square">
@@ -22,6 +25,8 @@ export default function MainMenu() {
           <button onClick={() => (optionsState.value = { ...optionsState.value, isActive: true })}>
             Options
           </button>
+  
+          <MidiPlayer />
         </div>
       </div>
     </section>

@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 import abcjs from "abcjs";
-import { AbcNotation } from "tonal";
 import { usePiano } from "./PianoProvider";
+import { gameState } from "../data/gameState";
+import { levels } from "../data/levels";
 
 export default function SheetMusic({ id, title = "", notation, noteLength = "1", isTask = false }) {
   const { pianoOnce, releaseAllNotes } = usePiano();
@@ -9,26 +10,16 @@ export default function SheetMusic({ id, title = "", notation, noteLength = "1",
 
   const timeoutsRef = useRef([]);
 
-  function handlePlay(abcNotes) {
+  const levelInfo = levels.value[gameState.value.currentLevel];
+
+  function handlePlay(task) {
     timeoutsRef.current.forEach(clearTimeout);
     timeoutsRef.current = [];
 
     releaseAllNotes();
-    const chordsRemoved = abcNotes.replace(/".*?"|'.*?'/g, "").replace(/\[|\]/g, "");
-    console.log("🚀  chordsRemoved:", chordsRemoved);
-    const notes = [];
-    for (let i = 0; i < chordsRemoved.length; i++) {
-      const note = AbcNotation.abcToScientificNotation(chordsRemoved[i]);
-      if (note.length > 0) {
-        notes.push(note);
-      } else {
-        i++;
-      }
-    }
-    console.log("🚀  notes:", notes);
 
-    notes.forEach((note, index) => {
-      const timeoutId = setTimeout(() => pianoOnce(note), index * 1500);
+    task.forEach((note, index) => {
+      const timeoutId = setTimeout(() => pianoOnce(note), index * 1000);
       timeoutsRef.current.push(timeoutId);
     });
   }
@@ -47,7 +38,10 @@ export default function SheetMusic({ id, title = "", notation, noteLength = "1",
     <>
       <div id={id}></div>
       {isTask && (
-        <button onClick={() => handlePlay(notation)} className="w-1/6 absolute bottom-2 right-2">
+        <button
+          onClick={() => handlePlay(levelInfo.taskCheck)}
+          className="w-1/6 absolute bottom-2 right-2"
+        >
           Play Notes
         </button>
       )}

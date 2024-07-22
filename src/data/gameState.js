@@ -37,7 +37,7 @@ const coloredNotes = mappedNotes("A");
 
 //CARD and DECK DATA
 
-const card = (note, octave, cost = 1, unlocked = true) => ({
+const card = (note = "", octave = "", cost = 1, unlocked = true) => ({
   id: randomId("note-card"),
   type: "note",
   unlocked,
@@ -50,7 +50,7 @@ const card = (note, octave, cost = 1, unlocked = true) => ({
 const noteDeck = () => {
   const noteDeck = [];
   for (let i = 0; i < 12; i++) {
-    noteDeck.push(card("A", 4));
+    noteDeck.push(card());
   }
   return noteDeck;
 };
@@ -101,14 +101,8 @@ const powers = {
   }),
 
   "Undo Chord": (value = 1) => ({
-    effect: (str) => {
-
-      const lastIndex = str.lastIndexOf('[');
-      if (lastIndex === -1) {
-          return str;
-      }
-      return str.substring(0, lastIndex);
-
+    effect: () => {
+      console.log("This card operates on local state");
     },
     desc: `Undo ${value} chord`,
     oneTime: false,
