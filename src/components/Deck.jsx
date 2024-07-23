@@ -29,21 +29,23 @@ export default function Deck({ cards, discardPile, showModal, closeModal }) {
           <h2 className="text-3xl col-span-9">Available Cards: {cards.length}</h2>
           {orderedCards.map((card) => {
             return (
-              <div key={randomId()} className="card">
-                {card.unlocked ? (
-                  card.type === "note" ? (
-                    <>
-                      <LazyLoadImage
-                        src={`${import.meta.env.BASE_URL}/G-clef.svg`}
-                        alt="note-card"
-                      />
-                    </>
+              <div key={randomId()} className="h-[180px]">
+                <div  className="card ">
+                  {card.unlocked ? (
+                    card.type === "note" ? (
+                      <>
+                        <LazyLoadImage
+                          src={`${import.meta.env.BASE_URL}/G-clef.svg`}
+                          alt="note-card"
+                        />
+                      </>
+                    ) : (
+                      <p>{card.power.name}</p>
+                    )
                   ) : (
-                    <p>{card.power.name}</p>
-                  )
-                ) : (
-                  <div>LOCKED</div>
-                )}
+                    <div>LOCKED</div>
+                  )}
+                </div>
               </div>
             );
           })}
@@ -54,19 +56,21 @@ export default function Deck({ cards, discardPile, showModal, closeModal }) {
             <h2 className="text-3xl col-span-4">Played Cards: {discardPile.length} </h2>
             {orderedDiscard.map((card) => {
               return (
-                <div key={randomId()} className="card">
-                  {card.unlocked ? (
-                    card.type === "note" ? (
-                      <LazyLoadImage
-                        src={`${import.meta.env.BASE_URL}/G-clef.svg`}
-                        alt="note-card"
-                      />
+                <div key={randomId()} className="h-[180px]">
+                  <div  className="card ">
+                    {card.unlocked ? (
+                      card.type === "note" ? (
+                        <LazyLoadImage
+                          src={`${import.meta.env.BASE_URL}/G-clef.svg`}
+                          alt="note-card"
+                        />
+                      ) : (
+                        <p>{card.power.name}</p>
+                      )
                     ) : (
-                      <p>{card.power.name}</p>
-                    )
-                  ) : (
-                    <div>LOCKED</div>
-                  )}
+                      <div>LOCKED</div>
+                    )}
+                  </div>
                 </div>
               );
             })}
@@ -76,8 +80,10 @@ export default function Deck({ cards, discardPile, showModal, closeModal }) {
             <h2 className="text-3xl col-span-4">Burned Cards: {burnedCards.length} </h2>
             {burnedCards.map((card) => {
               return (
-                <div key={randomId()} className="card">
-                  {<p>{card.power.name}</p>}
+                <div key={randomId()} className="h-[180px]">
+                  <div  className="card ">
+                    {<p>{card.power.name}</p>}
+                  </div>
                 </div>
               );
             })}

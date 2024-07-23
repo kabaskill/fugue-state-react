@@ -104,6 +104,7 @@ export default function Gameplay() {
     const newDeck = [...playerState.value.deck];
     const newBurnedCards = [...playerState.value.burnedCards];
 
+    let lastChord = "";
     let energyGain = 0;
 
     const energyCost = selectedCards.reduce((totalCost, cardId) => {
@@ -181,10 +182,14 @@ export default function Gameplay() {
       }
     });
 
-    // const lastChord = playedNotes.join("");
-    // if (levelInfo.taskCheck.join("").includes(lastChord)) {
-    //   energyGain += 1;
-    // }
+    lastChord = playedNotes.join("");
+
+    if (lastChord) {
+      const taskCheck = levelInfo.taskCheck.join("");
+      if (taskCheck.includes(lastChord)) {
+        energyGain += 1;
+      }
+    }
 
     playerState.value = {
       ...playerState.value,
