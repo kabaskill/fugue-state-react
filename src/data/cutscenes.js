@@ -35,7 +35,7 @@ export const cutscenes = [
     ],
   },
   {
-    title: "Chapter 2:",
+    title: "Chapter 1:",
     description: "The Journey Begins",
     background: "",
     dialog: [
@@ -51,14 +51,29 @@ export const cutscenes = [
         image: "Player",
         line: "Let's go!",
       },
+    ],
+  },
+  {
+    title: "Chapter 1:",
+    description: "The Journey Onwards",
+    background: "",
+    dialog: [
       {
         image: "Fritz",
-        line: "Sure thing",
+        line: "You seem to like it...",
+      },
+      {
+        image: "Player",
+        line: "This is awesome! Is this all it can do?",
+      },
+      {
+        image: "Fritz",
+        line: "Of course not! Let me crank it up a little bit.",
       },
     ],
   },
   {
-    title: "Chapter 3:",
+    title: "Chapter 1:",
     description: "The Demo Ends",
     background: "",
     dialog: [

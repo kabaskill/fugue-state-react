@@ -18,8 +18,11 @@ export default function SheetMusic({ id, title = "", notation, noteLength = "1",
 
     releaseAllNotes();
 
-    task.forEach((note, index) => {
-      const timeoutId = setTimeout(() => pianoOnce(note), index * 1000);
+    task.forEach((noteArr, index) => {
+      const timeoutId = setTimeout(
+        () => noteArr.forEach((note) => pianoOnce(note, 1.9)),
+        index * 2000
+      );
       timeoutsRef.current.push(timeoutId);
     });
   }
@@ -39,7 +42,7 @@ export default function SheetMusic({ id, title = "", notation, noteLength = "1",
       <div id={id}></div>
       {isTask && (
         <button
-          onClick={() => handlePlay(levelInfo.taskCheck)}
+          onClick={() => handlePlay(levelInfo.taskChords)}
           className="w-1/6 absolute bottom-2 right-2"
         >
           Play Notes

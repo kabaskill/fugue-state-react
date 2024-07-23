@@ -8,7 +8,7 @@ export default function PowerCard({ card, idSuffix = "", isSelected, onSelect })
   });
 
   const style = {
-    height: "100%",
+    maxWidth: "20%",
     transition,
     transform: CSS.Transform.toString(transform),
     zIndex: isDragging || isSelected ? 1000 : undefined,
@@ -61,10 +61,13 @@ export default function PowerCard({ card, idSuffix = "", isSelected, onSelect })
             Power
           </text>
         </svg>
-        <p>{card.power.name}</p>
+        <p className="text-center">
+          {card.power.name}
+          {card.power.oneTime && " (One Time)"}
+        </p>
         <div className=" w-5/6 h-1/4 px-4 bg-slate-200 rounded-md flex justify-center items-center text-center">
           {/* <p className="text-xl">Note Card:</p> */}
-          <p className="text-lg">{card.power.desc}</p>
+          <p>{card.power.desc}</p>
         </div>
       </motion.div>
     </div>

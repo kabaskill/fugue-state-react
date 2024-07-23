@@ -14,27 +14,15 @@ export default function QuestPane() {
   const [showModal, setShowModal] = useState(true);
 
   const level = levels.value;
+  const current = gameState.value.currentLevel;
 
-  const isChroma =
-    (gameState.value.currentLevel === 0 && dialogIndex === 2) ||
-    (gameState.value.currentLevel === 0 && dialogIndex === 3);
+  const isChroma = current === 0 && (dialogIndex === 2 || dialogIndex === 3);
+  const isSheet = current === 0 && dialogIndex >= 4 && dialogIndex <= 6;
+  const isCard = current === 0 && dialogIndex >= 7 && dialogIndex <= 11;
+  const isNote = current === 0 && dialogIndex === 11;
 
-  const isSheet =
-    (gameState.value.currentLevel === 0 && dialogIndex === 4) ||
-    (gameState.value.currentLevel === 0 && dialogIndex === 5) ||
-    (gameState.value.currentLevel === 0 && dialogIndex === 6);
-
-  const isCard =
-    (gameState.value.currentLevel === 0 && dialogIndex === 7) ||
-    (gameState.value.currentLevel === 0 && dialogIndex === 8) ||
-    (gameState.value.currentLevel === 0 && dialogIndex === 9) ||
-    (gameState.value.currentLevel === 0 && dialogIndex === 10) ||
-    (gameState.value.currentLevel === 0 && dialogIndex === 11);
-
-  const isNote = gameState.value.currentLevel === 0 && dialogIndex === 11;
-
-  const card = {...playerState.value.hand[0], id:"quest-card"};
-  const noteCard = { ...card, id:"quest-note-card", note: "A", octave: 4, color: "red" };
+  const card = { ...playerState.value.hand[0], id: "quest-card" };
+  const noteCard = { ...card, id: "quest-note-card", note: "A", octave: 4, color: "red" };
   const power = playerState.value.deck.find((item) => item.type === "power");
 
   return (
@@ -60,7 +48,7 @@ export default function QuestPane() {
             <div className="absolute w-0 h-0 left-full top-3/4 border-transparent border-l-slate-200 border-l-[1.5rem] border-t-[1rem] border-b-[1rem] drop-shadow-xl"></div>
 
             <p className="text-2xl flex-1 text-center flex items-center justify-center px-12 py-12">
-              {level[gameState.value.currentLevel].dialog[dialogIndex]}
+              {level[current].dialog[dialogIndex]}
             </p>
 
             {/* CHROMA FLOWER */}
@@ -76,7 +64,7 @@ export default function QuestPane() {
                 <SheetMusic
                   id="tutorial"
                   title="Welcome to Fugue State!"
-                  notation={level[gameState.value.currentLevel].taskAbc}
+                  notation={level[current].taskAbc}
                 />
                 <SheetMusic
                   id="tutorial-task"
@@ -88,7 +76,7 @@ export default function QuestPane() {
 
             {/* CARD */}
             {isCard && (
-              <ul className="w-4/5 h-2/5  flex justify-center gap-6  py-8">
+              <ul className="w-4/5 h-2/5  flex justify-center items-center gap-6  py-8">
                 <CardNew card={card} key={card.id} isSelected={false} selectedIndex={0} />
 
                 {!isNote ? (
@@ -98,7 +86,28 @@ export default function QuestPane() {
                     onSelect={() => console.log("Power Clicked")}
                   />
                 ) : (
-                  <CardNew card={noteCard} key={noteCard.id} isSelected={false} selectedIndex={0} />
+                  <>
+                    <svg
+                      className="w-16 h-16 "
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#3b82f6"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M7 16l-4-4 4-4" />
+                      <path d="M17 8l4 4-4 4" />
+                      <path d="M3 12h18" />
+                    </svg>
+                    <CardNew
+                      card={noteCard}
+                      key={noteCard.id}
+                      isSelected={false}
+                      selectedIndex={0}
+                    />
+                  </>
                 )}
               </ul>
             )}
@@ -128,10 +137,10 @@ export default function QuestPane() {
               </button>
 
               <button
-                disabled={dialogIndex === level[gameState.value.currentLevel].dialog.length - 1}
+                disabled={dialogIndex === level[current].dialog.length - 1}
                 onClick={() =>
-                  dialogIndex === level[gameState.value.currentLevel].dialog.length - 1
-                    ? setDialogindex(level[gameState.value.currentLevel].dialog.length - 1)
+                  dialogIndex === level[current].dialog.length - 1
+                    ? setDialogindex(level[current].dialog.length - 1)
                     : setDialogindex(dialogIndex + 1)
                 }
               >

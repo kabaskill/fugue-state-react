@@ -20,7 +20,7 @@ export default function CardNew({ card, idSuffix = "", isSelected, onSelect, sel
   const { pianoOnce, activeNotes, offset } = usePiano();
 
   const style = {
-    height: "100%",
+    maxWidth: "20%",
     transition,
     transform: CSS.Transform.toString(transform),
     zIndex: isDragging || isSelected ? 1000 : undefined,
@@ -76,7 +76,7 @@ export default function CardNew({ card, idSuffix = "", isSelected, onSelect, sel
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <motion.div
-        animate={{ y: isSelected ? -35 : 0 }}
+        animate={{ y: isSelected ? -(35 + selectedIndex * 10) : 0 }}
         whileHover={{ scale: 1.05, zIndex: 1000 }}
         className={`card ${isDragging && "cursor-grab"}`}
         onClick={handleCardClick}
@@ -130,7 +130,7 @@ export default function CardNew({ card, idSuffix = "", isSelected, onSelect, sel
                 ? optionsState.value.notation === "chromatic"
                   ? chromaticIndex
                   : optionsState.value.notation === "do-re-mi"
-                  ? optionsState.value.doremiArray[chromaticIndex]
+                  ? optionsState.value.doremiObject[newCard.note]
                   : newCard.note
                 : "Note"}
             </motion.text>
@@ -210,7 +210,7 @@ export default function CardNew({ card, idSuffix = "", isSelected, onSelect, sel
           </>
         ) : (
           <div className=" w-5/6 h-1/3 px-4 py-4 bg-slate-200 rounded-md flex justify-center items-center text-center">
-            <p className="text-lg">Click to select and asign a note</p>
+            <p className="text-lg">{isSelected ? "Play a note to asign" : "Click to select"}</p>
           </div>
         )}
       </motion.div>

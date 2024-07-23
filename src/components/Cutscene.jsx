@@ -51,7 +51,7 @@ export default function Cutscene(isCutscene = gameState.value.currentScene === "
       <div className="border-black border-2 bg-slate-200 rounded-2xl w-[100%] h-1/3 mx-auto absolute bottom-0 left-0 ">
         <div className="p-8 text-center">
           <h2 className="text-2xl font-bold ">{scene.dialog[dialogIndex].image}</h2>
-          <p className=" text-balance">{scene.dialog[dialogIndex].line}</p>
+          <p className=" text-balance text-xl">{scene.dialog[dialogIndex].line}</p>
         </div>
 
         <div className="absolute bottom-4 w-[50%] left-[25%] flex justify-around">

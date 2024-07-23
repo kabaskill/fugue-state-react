@@ -33,7 +33,7 @@ export default function ChromaFlower() {
   function handlePetalClick(index) {
     const noteToPlay = notesToPlay[index];
 
-    pianoOnce(noteToPlay, 1);
+   pianoOnce(noteToPlay, 0.5);
   }
 
   return (
@@ -85,7 +85,7 @@ export default function ChromaFlower() {
                     {optionsState.value.notation === "chromatic"
                       ? index
                       : optionsState.value.notation === "do-re-mi"
-                      ? optionsState.value.doremiArray[index]
+                      ? optionsState.value.doremiObject[note]
                       : note}
                   </text>
                   {isPlaying && (

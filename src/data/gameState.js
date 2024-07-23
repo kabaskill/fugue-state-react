@@ -76,7 +76,7 @@ const powers = {
     },
     desc: `Increase Energy by ${value}`,
     oneTime: false,
-    cost: 1,
+    cost: 0,
   }),
 
   "Max Energy": (value = 3) => ({
@@ -89,11 +89,13 @@ const powers = {
     cost: 1,
   }),
 
-  "Create Note": (note = "A", octave = 4) => ({
+  "Create Note": () => ({
     effect: (state) => {
-      const newCard = card(note, octave);
-      const newState = { ...state, hand: [...state.hand, newCard] };
-      return newState;
+      const newCard = card();
+      return {
+        ...state,
+        hand: [...state.hand, newCard],
+      };
     },
     desc: `Create a Note Card in Hand`,
     oneTime: true,
@@ -104,20 +106,21 @@ const powers = {
     effect: () => {
       console.log("This card operates on local state");
     },
-    desc: `Undo ${value} chord`,
+    desc: `Undo ${value} chord and return its energy`,
     oneTime: false,
-    cost: 1,
+    cost: 2,
   }),
 };
 
 const powerDeck = () => {
   const powersDeck = [];
 
-  for (let i = 0; i < 2; i++) {
-    for (const [key, powerFunction] of Object.entries(powers)) {
-      powersDeck.push(powerCard(key, powerFunction()));
-    }
+  for (const [key, powerFunction] of Object.entries(powers)) {
+    powersDeck.push(powerCard(key, powerFunction()));
   }
+
+  powersDeck.push(powerCard("Undo Chord", powers["Undo Chord"]()));
+  powersDeck.push(powerCard("Energy", powers["Energy"]()));
 
   return shuffleArray(powersDeck);
 };
@@ -137,7 +140,20 @@ const defaultOptionsState = {
   notation: "scientific",
   rootNote: "A",
   allNotes: coloredNotes,
-  doremiArray: ["la", "la#", "si", "do", "do#", "re", "re#", "mi", "fa", "fa#", "sol", "sol#"],
+  doremiObject: {
+    "A": "la",
+    "A#": "la#",
+    "B": "si",
+    "C": "do",
+    "C#": "do#",
+    "D": "re",
+    "D#": "re#",
+    "E": "mi",
+    "F": "fa",
+    "F#": "fa#",
+    "G": "sol",
+    "G#": "sol#",
+  },
 };
 
 const initialDeck = noteDeck(defaultOptionsState.allNotes);
@@ -174,6 +190,7 @@ const defaultPlayerState = {
   hand: initialHand,
   powers: initialPowerDeck,
   discardPile: [],
+  burnedCards: [],
   handSize: 5,
   handNotes: 3,
   handPowers: 2,
@@ -206,66 +223,32 @@ effect(() => {
       return Object.keys(allNotes)[oldIndex];
     };
 
-    playerState.value.hand = playerState.value.hand.map((card) => {
-      const newNote = remapNote(card.note);
-      return {
-        ...card,
-        note: newNote,
-        color: coloredNotes[newNote],
-      };
-    });
-
-    playerState.value.deck = playerState.value.deck.map((card) => {
-      const newNote = remapNote(card.note);
-      return {
-        ...card,
-        note: newNote,
-        color: coloredNotes[newNote],
-      };
-    });
+    playerState.value = {
+      ...playerState.value,
+      hand: playerState.value.hand.map((card) => {
+        if (card.type === "note") {
+          const newNote = remapNote(card.note);
+          return {
+            ...card,
+            note: newNote,
+            color: allNotes[newNote],
+          };
+        }
+        return card;
+      }),
+      deck: playerState.value.deck.map((card) => {
+        if (card.type === "note") {
+          const newNote = remapNote(card.note);
+          return {
+            ...card,
+            note: newNote,
+            color: allNotes[newNote],
+          };
+        }
+        return card;
+      }),
+    };
 
     rootNoteCache = newRootNote;
   }
 }, [optionsState.value.rootNote]);
-
-// Utility Functions for Game Actions
-// const drawHand = (deck, handSize) => {
-//   const newHand = [];
-//   for (let i = 0; i < handSize; i++) {
-//     if (deck.length === 0) break;
-//     newHand.push(deck.pop());
-//   }
-//   return newHand;
-// };
-
-// const playCard = (card) => {
-//   const { hand, deck, noteDiscardPile, powerDiscardPile } = playerState.value;
-//   playerState.value.hand = hand.filter(c => c.id !== card.id);
-
-//   if (card.type === 'note') {
-//     playerState.value.noteDiscardPile.push(card);
-//   } else if (card.type === 'power') {
-//     playerState.value.powerDiscardPile.push(card);
-//   }
-
-//   drawNewCards();
-// };
-
-// const drawNewCards = () => {
-//   const { deck, powerDeck, hand, handNotes, handPowers } = playerState.value;
-//   let newHand = [...hand];
-
-//   const drawNoteCards = handNotes - newHand.filter(c => c.type === 'note').length;
-//   for (let i = 0; i < drawNoteCards; i++) {
-//     if (deck.length === 0) break;
-//     newHand.push(deck.pop());
-//   }
-
-//   const drawPowerCards = handPowers - newHand.filter(c => c.type === 'power').length;
-//   for (let i = 0; i < drawPowerCards; i++) {
-//     if (powerDeck.length === 0) break;
-//     newHand.push(powerDeck.pop());
-//   }
-
-//   playerState.value.hand = newHand;
-// };

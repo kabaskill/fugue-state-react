@@ -1,6 +1,6 @@
 import { useEffect, useCallback, useState } from "react";
 import * as Tone from "tone";
-import midiData from "../data/midiDataErl2.json";
+import midiData from "../data/midiDataErl.json";
 import { usePiano } from "./PianoProvider.jsx";
 
 export default function MidiPlayer() {

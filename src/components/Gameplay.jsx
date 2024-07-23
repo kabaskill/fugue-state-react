@@ -18,6 +18,7 @@ import randomId from "../utils/randomId";
 import { levels } from "../data/levels";
 import { AbcNotation, Note } from "tonal";
 import { motion } from "framer-motion";
+import EnergyBar from "./EnergyBar";
 
 export default function Gameplay() {
   const sensors = useSensors(
@@ -88,32 +89,70 @@ export default function Gameplay() {
     });
   }
 
+  function resetNoteCard(card) {
+    if (card.type === "note") {
+      return { ...card, note: "", octave: "", color: "" };
+    }
+    return card;
+  }
+
   function handleTurn(playOrDiscard) {
     const newHand = [...playerState.value.hand];
     const playedCards = [];
     const playedNotes = [];
     const newDiscardPile = [...playerState.value.discardPile];
+    const newDeck = [...playerState.value.deck];
+    const newBurnedCards = [...playerState.value.burnedCards];
+
+    let energyGain = 0;
+
+    const energyCost = selectedCards.reduce((totalCost, cardId) => {
+      const card = newHand.find((c) => c.id === cardId);
+
+      if (playOrDiscard === "play") {
+        return totalCost + (card.type === "note" ? card.cost : card.power.cost);
+      } else {
+        return 0;
+      }
+    }, 0);
+
+    if (
+      selectedCards.some((cardId) => {
+        const card = newHand.find((c) => c.id === cardId);
+        return card.type === "note" && !card.note;
+      })
+    ) {
+      setSelectedCards([]);
+      return;
+    }
+
+    if (energyCost > playerState.value.energy && playOrDiscard === "play") {
+      setSelectedCards([]);
+      return;
+    }
 
     selectedCards.forEach((cardId, index) => {
       const cardIndex = newHand.findIndex((card) => card.id === cardId);
       if (cardIndex !== -1) {
         const card = newHand[cardIndex];
+        newHand.splice(cardIndex, 1);
 
         if (playOrDiscard === "play") {
           if (card.type === "note") {
-            setPlayerTaskArray((prev) => [...prev, card.note + card.octave]);
+            const resetCard = resetNoteCard(card);
+            playedCards.push(resetCard);
             playedNotes.push(card.note + card.octave);
+
+            setPlayerTaskArray((prev) => [...prev, card.note + card.octave]);
 
             if (index === selectedCards.length - 1) {
               setPlayerTurnArray((prev) => [...prev, playedNotes]);
             }
-          }
-
-          if (card.type === "power") {
+          } else if (card.type === "power") {
             if (card.power.name === "Undo Chord") {
-              setPlayerTaskArray((prev) =>
-                prev.slice(0, -playerTurnArray[playerTurnArray.length - 1].length)
-              );
+              const lastChord = playerTurnArray[playerTurnArray.length - 1];
+              energyGain += lastChord.length;
+              setPlayerTaskArray((prev) => prev.slice(0, -lastChord.length));
               setPlayerTurnArray((prev) => prev.slice(0, -1));
             } else {
               const updatedState = card.power.effect(playerState.value);
@@ -124,14 +163,28 @@ export default function Gameplay() {
               );
               playerState.value = updatedState;
             }
+
+            if (card.power.oneTime) {
+              newBurnedCards.push(card);
+            } else {
+              playedCards.push(card);
+            }
+          }
+        } else {
+          if (card.type === "note") {
+            const resetCard = resetNoteCard(card);
+            newDiscardPile.push(resetCard);
+          } else {
+            newDiscardPile.push(card);
           }
         }
-        newHand.splice(cardIndex, 1);
-        playedCards.push(card);
       }
     });
 
-    newDiscardPile.push(...playedCards);
+    // const lastChord = playedNotes.join("");
+    // if (levelInfo.taskCheck.join("").includes(lastChord)) {
+    //   energyGain += 1;
+    // }
 
     playerState.value = {
       ...playerState.value,
@@ -139,11 +192,14 @@ export default function Gameplay() {
         ...newHand.filter((card) => card.type === "note"),
         ...newHand.filter((card) => card.type === "power"),
       ],
-      discardPile: newDiscardPile,
+      discardPile: [...newDiscardPile, ...playedCards],
+      deck: newDeck,
+      burnedCards: newBurnedCards,
+      energy: playerState.value.energy - energyCost + energyGain,
     };
 
-    drawNewCards();
     setSelectedCards([]);
+    drawNewCards();
   }
 
   function drawNewCards() {
@@ -173,16 +229,32 @@ export default function Gameplay() {
 
     playerState.value = {
       ...playerState.value,
-      hand: newHand,
+      hand: [
+        ...newHand.filter((card) => card.type === "note"),
+        ...newHand.filter((card) => card.type === "power"),
+      ],
       deck: newDeck,
     };
   }
 
   useEffect(() => {
+    const newDeck = [
+      ...playerState.value.hand,
+      ...playerState.value.discardPile,
+      ...playerState.value.deck,
+    ].filter(
+      (card) => !playerState.value.burnedCards.some((burnedCard) => burnedCard.id === card.id)
+    );
+
     playerState.value = {
       ...playerState.value,
-      deck: [...playerState.value.deck, ...playerState.value.discardPile],
+      hand: [],
+      energy: playerState.value.maxEnergy,
+      maxEnergy: playerState.value.maxEnergy,
+      discardPile: [],
+      deck: newDeck,
     };
+    drawNewCards();
   }, []);
 
   useEffect(() => {
@@ -275,11 +347,8 @@ export default function Gameplay() {
 
         {/*CARD CONTAINER*/}
         <div className="bg-slate-600 row-span-1 col-span-6 flex ">
-          <div className="w-[15%] flex flex-col justify-center items-center gap-4 ">
-            <p className="text-white font-bold text-2xl text-center">
-              Energy:
-              <br /> {playerState.value.energy} / {playerState.value.maxEnergy}
-            </p>
+          <div className={`w-[15%] flex flex-col justify-center items-center gap-4 "}`}>
+            <EnergyBar />
 
             <div className="flex flex-col w-full bg-slate-400  gap-4 p-4 ">
               <div className=" flex flex-col justify-around gap-4">
@@ -330,9 +399,7 @@ export default function Gameplay() {
           </div>
 
           <SortableContext items={items.value} strategy={horizontalListSortingStrategy}>
-            <ul
-              className={`w-[65%] h-full  bg-slate-700 flex justify-center items-center p-4  gap-4`}
-            >
+            <ul className={`w-[65%] h-full  bg-slate-700 flex justify-center p-4 gap-4`}>
               {items.value.map((card) => {
                 if (card.type === "note") {
                   return (
