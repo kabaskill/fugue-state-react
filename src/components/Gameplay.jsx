@@ -1,7 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { computed } from "@preact/signals-react";
-import { closestCenter, DndContext, DragOverlay, useSensor, useSensors } from "@dnd-kit/core";
-import { arrayMove, horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
+import {
+  closestCenter,
+  DndContext,
+  DragOverlay,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  horizontalListSortingStrategy,
+  SortableContext,
+} from "@dnd-kit/sortable";
 import { CustomPointerSensor } from "../utils/CustomPointerSensor";
 
 import CardNew from "./CardNew";
@@ -28,7 +38,7 @@ export default function Gameplay() {
         distance: 20,
         tolerance: 5,
       },
-    })
+    }),
   );
 
   const { activeNotes } = usePiano();
@@ -62,7 +72,7 @@ export default function Gameplay() {
       playerState.value.hand = arrayMove(
         items.value,
         items.value.findIndex((item) => item.id === active.id),
-        items.value.findIndex((item) => item.id === over.id)
+        items.value.findIndex((item) => item.id === over.id),
       );
     }
 
@@ -77,7 +87,9 @@ export default function Gameplay() {
         return prev.filter((id) => id !== cardId);
       } else {
         const otherTypeSelected = prev.some(
-          (id) => items.value.find((card) => card.id === id)?.type !== selectedCard.type
+          (id) =>
+            items.value.find((card) => card.id === id)?.type !==
+            selectedCard.type,
         );
 
         if (otherTypeSelected) {
@@ -159,8 +171,9 @@ export default function Gameplay() {
               const updatedState = card.power.effect(playerState.value);
               newHand.push(
                 ...updatedState.hand.filter(
-                  (c) => !newHand.some((existingCard) => existingCard.id === c.id)
-                )
+                  (c) =>
+                    !newHand.some((existingCard) => existingCard.id === c.id),
+                ),
               );
               playerState.value = updatedState;
             }
@@ -212,7 +225,8 @@ export default function Gameplay() {
     let newHand = [...hand];
     let newDeck = [...deck];
 
-    const drawNoteCards = handNotes - newHand.filter((c) => c.type === "note").length;
+    const drawNoteCards =
+      handNotes - newHand.filter((c) => c.type === "note").length;
     for (let i = 0; i < drawNoteCards; i++) {
       if (newDeck.length === 0) break;
       const card = newDeck.find((c) => c.type === "note");
@@ -222,7 +236,8 @@ export default function Gameplay() {
       }
     }
 
-    const drawPowerCards = handPowers - newHand.filter((c) => c.type === "power").length;
+    const drawPowerCards =
+      handPowers - newHand.filter((c) => c.type === "power").length;
     for (let i = 0; i < drawPowerCards; i++) {
       if (newDeck.length === 0) break;
       const card = newDeck.find((c) => c.type === "power");
@@ -248,7 +263,10 @@ export default function Gameplay() {
       ...playerState.value.discardPile,
       ...playerState.value.deck,
     ].filter(
-      (card) => !playerState.value.burnedCards.some((burnedCard) => burnedCard.id === card.id)
+      (card) =>
+        !playerState.value.burnedCards.some(
+          (burnedCard) => burnedCard.id === card.id,
+        ),
     );
 
     playerState.value = {
@@ -268,7 +286,10 @@ export default function Gameplay() {
     }
 
     const abcNotation = playerTurnArray
-      .map((turn) => `[${turn.map((note) => AbcNotation.scientificToAbcNotation(note)).join("")}]`)
+      .map(
+        (turn) =>
+          `[${turn.map((note) => AbcNotation.scientificToAbcNotation(note)).join("")}]`,
+      )
       .join("");
 
     setPlayerAbc(abcNotation);
@@ -281,7 +302,7 @@ export default function Gameplay() {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div className="grid grid-cols-6 grid-rows-3 size-full relative">
+      <div className="relative grid size-full grid-cols-6 grid-rows-3">
         <Deck
           cards={playerState.value.deck}
           discardPile={playerState.value.discardPile}
@@ -293,7 +314,7 @@ export default function Gameplay() {
 
         {taskFinished && (
           <button
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2/5 h-1/4 z-50 text-2xl "
+            className="absolute left-1/2 top-1/2 z-50 h-1/4 w-2/5 -translate-x-1/2 -translate-y-1/2 transform text-2xl"
             onClick={() =>
               (gameState.value = {
                 ...gameState.value,
@@ -307,29 +328,36 @@ export default function Gameplay() {
           </button>
         )}
 
-        <div className="flex justify-end gap-2 absolute top-4 right-4 z-10">
-          <button onClick={() => (optionsState.value = { ...optionsState.value, isActive: true })}>
+        <div className="absolute right-4 top-4 z-10 flex justify-end gap-2">
+          <button
+            onClick={() =>
+              (optionsState.value = { ...optionsState.value, isActive: true })
+            }
+          >
             Options
           </button>
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={() => {
-              gameState.value = { ...gameState.value, currentScene: "main-menu" };
+              gameState.value = {
+                ...gameState.value,
+                currentScene: "main-menu",
+              };
             }}
           >
             Main Menu
           </motion.button>
         </div>
 
-        <div className="flex row-span-2 col-span-6">
+        <div className="col-span-6 row-span-2 flex">
           <div className="w-1/3">
             <ChromaFlower />
           </div>
 
-          <div className="flex w-2/3 gap-4 p-2 bg-slate-500  ">
-            <div className="flex flex-col w-full gap-2">
-              <div className="bg-slate-100  relative pb-16 rounded-xl ">
+          <div className="flex w-2/3 gap-4 bg-slate-500 p-2">
+            <div className="flex w-full flex-col gap-2">
+              <div className="relative rounded-xl bg-slate-100 pb-16">
                 <SheetMusic
                   id={levelInfo.title}
                   title={levelInfo.title}
@@ -338,8 +366,12 @@ export default function Gameplay() {
                 />
               </div>
 
-              <div className="bg-slate-100 flex-1 relative rounded-xl ">
-                <SheetMusic id="task" title="Player's Music" notation={playerAbc + abcNoteString} />
+              <div className="relative flex-1 rounded-xl bg-slate-100">
+                <SheetMusic
+                  id="task"
+                  title="Player's Music"
+                  notation={playerAbc + abcNoteString}
+                />
               </div>
             </div>
             {/* <div className="grid grid-cols-2 size-full">
@@ -351,13 +383,15 @@ export default function Gameplay() {
         </div>
 
         {/*CARD CONTAINER*/}
-        <div className="bg-slate-600 row-span-1 col-span-6 flex ">
-          <div className={`w-[15%] flex flex-col justify-center items-center gap-4 "}`}>
+        <div className="col-span-6 row-span-1 flex bg-slate-600">
+          <div
+            className={`"} flex w-[15%] flex-col items-center justify-center gap-4`}
+          >
             <EnergyBar />
 
-            <div className="flex flex-col w-full bg-slate-400  gap-4 p-4 ">
-              <div className=" flex flex-col justify-around gap-4">
-                <div className="flex  justify-between items-center">
+            <div className="flex w-full flex-col gap-4 bg-slate-400 p-4">
+              <div className="flex flex-col justify-around gap-4">
+                <div className="flex items-center justify-between">
                   <label htmlFor="root-note">Root Note</label>
                   <select
                     name="root-note"
@@ -380,7 +414,7 @@ export default function Gameplay() {
                   </select>
                 </div>
 
-                <div className="flex  justify-between items-center">
+                <div className="flex items-center justify-between">
                   <label htmlFor="notation">Notation</label>
                   <select
                     name="notation"
@@ -403,8 +437,13 @@ export default function Gameplay() {
             </div>
           </div>
 
-          <SortableContext items={items.value} strategy={horizontalListSortingStrategy}>
-            <ul className={`w-[65%] h-full  bg-slate-700 flex justify-center p-4 gap-4`}>
+          <SortableContext
+            items={items.value}
+            strategy={horizontalListSortingStrategy}
+          >
+            <ul
+              className={`flex h-full w-[65%] justify-center gap-4 bg-slate-700 p-4`}
+            >
               {items.value.map((card) => {
                 if (card.type === "note") {
                   return (
@@ -432,7 +471,7 @@ export default function Gameplay() {
             </ul>
           </SortableContext>
 
-          <div className="w-[20%] py-8 px-4 grid grid-cols-2 grid-rows-2 grid-flow-col place-items-center gap-4">
+          <div className="grid w-[20%] grid-flow-col grid-cols-2 grid-rows-2 place-items-center gap-4 px-4 py-8">
             <button
               className="size-4/5"
               onClick={() => handleTurn("play")}
@@ -448,7 +487,7 @@ export default function Gameplay() {
               Discard
             </button>
             <button
-              className="self-center row-span-2 size-full "
+              className="row-span-2 size-full self-center"
               onClick={() => setIsDeckOpen(true)}
             >
               Show <br />
@@ -462,9 +501,15 @@ export default function Gameplay() {
       <DragOverlay>
         {activeId ? (
           items.value.find((item) => item.id === activeId).type === "note" ? (
-            <CardNew card={items.value.find((item) => item.id === activeId)} idSuffix="-clone" />
+            <CardNew
+              card={items.value.find((item) => item.id === activeId)}
+              idSuffix="-clone"
+            />
           ) : (
-            <PowerCard card={items.value.find((item) => item.id === activeId)} idSuffix="-clone" />
+            <PowerCard
+              card={items.value.find((item) => item.id === activeId)}
+              idSuffix="-clone"
+            />
           )
         ) : null}
       </DragOverlay>

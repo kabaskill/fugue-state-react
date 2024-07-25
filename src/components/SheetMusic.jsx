@@ -4,7 +4,13 @@ import { usePiano } from "./PianoProvider";
 import { gameState } from "../data/gameState";
 import { levels } from "../data/levels";
 
-export default function SheetMusic({ id, title = "", notation, noteLength = "1", isTask = false }) {
+export default function SheetMusic({
+  id,
+  title = "",
+  notation,
+  noteLength = "1",
+  isTask = false,
+}) {
   const { pianoOnce, releaseAllNotes } = usePiano();
   const abcString = `X:1\nT:${title}\nM:4/4\nL:${noteLength}\nK:C\n${notation}|]`;
 
@@ -21,7 +27,7 @@ export default function SheetMusic({ id, title = "", notation, noteLength = "1",
     task.forEach((noteArr, index) => {
       const timeoutId = setTimeout(
         () => noteArr.forEach((note) => pianoOnce(note, 1.9)),
-        index * 2000
+        index * 2000,
       );
       timeoutsRef.current.push(timeoutId);
     });
@@ -43,7 +49,7 @@ export default function SheetMusic({ id, title = "", notation, noteLength = "1",
       {isTask && (
         <button
           onClick={() => handlePlay(levelInfo.taskChords)}
-          className="w-1/6 absolute bottom-2 right-2"
+          className="absolute bottom-2 right-2 w-1/6"
         >
           Play Notes
         </button>
