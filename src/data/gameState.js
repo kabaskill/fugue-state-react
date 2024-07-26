@@ -12,13 +12,16 @@ const shuffleArray = (array) => {
 };
 
 const mappedNotes = (startKey) => {
-  const coloredNotesArray = Range.chromatic(["A3", "G#4"], { sharps: true, pitchClass: true }).map(
-    (note, index) => ({
-      [note]: `hsl(${index * 30}, 80%, 50%)`,
-    })
-  );
+  const coloredNotesArray = Range.chromatic(["A3", "G#4"], {
+    sharps: true,
+    pitchClass: true,
+  }).map((note, index) => ({
+    [note]: `hsl(${index * 30}, 80%, 50%)`,
+  }));
 
-  const startIndex = coloredNotesArray.findIndex((item) => Object.keys(item)[0] === startKey);
+  const startIndex = coloredNotesArray.findIndex(
+    (item) => Object.keys(item)[0] === startKey,
+  );
 
   if (startIndex === -1) {
     console.error("Start key not found in the array.");
@@ -90,12 +93,9 @@ const powers = {
   }),
 
   "Create Note": () => ({
-    effect: (state) => {
+    effect: (hand) => {
       const newCard = card();
-      return {
-        ...state,
-        hand: [...state.hand, newCard],
-      };
+      hand.push(newCard);
     },
     desc: `Create a Note Card in Hand`,
     oneTime: true,
@@ -141,17 +141,17 @@ const defaultOptionsState = {
   rootNote: "A",
   allNotes: coloredNotes,
   doremiObject: {
-    "A": "la",
+    A: "la",
     "A#": "la#",
-    "B": "si",
-    "C": "do",
+    B: "si",
+    C: "do",
     "C#": "do#",
-    "D": "re",
+    D: "re",
     "D#": "re#",
-    "E": "mi",
-    "F": "fa",
+    E: "mi",
+    F: "fa",
     "F#": "fa#",
-    "G": "sol",
+    G: "sol",
     "G#": "sol#",
   },
 };
@@ -182,7 +182,7 @@ const { hand: initialHand, deck: remainingDeck } = drawInitialHand(
   initialDeck,
   initialPowerDeck,
   3,
-  2
+  2,
 );
 
 const defaultPlayerState = {
@@ -219,7 +219,9 @@ effect(() => {
     const oldNotes = mappedNotes(oldRootNote);
 
     const remapNote = (oldNote) => {
-      const oldIndex = Object.keys(oldNotes).findIndex((item) => item === oldNote);
+      const oldIndex = Object.keys(oldNotes).findIndex(
+        (item) => item === oldNote,
+      );
       return Object.keys(allNotes)[oldIndex];
     };
 

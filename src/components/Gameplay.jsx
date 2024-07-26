@@ -128,6 +128,7 @@ export default function Gameplay() {
         return 0;
       }
     }, 0);
+    console.log("🚀  energyCost:", energyCost);
 
     if (
       selectedCards.some((cardId) => {
@@ -139,7 +140,7 @@ export default function Gameplay() {
       return;
     }
 
-    if (energyCost > playerState.value.energy && playOrDiscard === "play") {
+    if (energyCost > playerState.value.energy) {
       setSelectedCards([]);
       return;
     }
@@ -163,19 +164,28 @@ export default function Gameplay() {
             }
           } else if (card.type === "power") {
             if (card.power.name === "Undo Chord") {
-              const lastChord = playerTurnArray[playerTurnArray.length - 1];
-              energyGain += lastChord.length;
-              setPlayerTaskArray((prev) => prev.slice(0, -lastChord.length));
-              setPlayerTurnArray((prev) => prev.slice(0, -1));
+              const lastPlayedChord =
+                playerTurnArray[playerTurnArray.length - 1];
+              if (lastPlayedChord && lastPlayedChord.length > 0) {
+                energyGain += lastPlayedChord.length;
+                setPlayerTaskArray((prev) =>
+                  prev.slice(0, -lastPlayedChord.length),
+                );
+                setPlayerTurnArray((prev) => prev.slice(0, -1));
+
+                playedCards.push(card);
+              } else {
+                newHand.push(card);
+                energyGain += card.power.cost;
+                setSelectedCards(selectedCards.filter((id) => id !== cardId));
+              }
             } else {
-              const updatedState = card.power.effect(playerState.value);
-              newHand.push(
-                ...updatedState.hand.filter(
-                  (c) =>
-                    !newHand.some((existingCard) => existingCard.id === c.id),
-                ),
-              );
-              playerState.value = updatedState;
+              if (card.power.name === "Create Note") {
+                card.power.effect(newHand);
+              } else {
+                const updatedState = card.power.effect(playerState.value);
+                playerState.value = updatedState;
+              }
             }
 
             if (card.power.oneTime) {
