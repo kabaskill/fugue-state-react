@@ -2,13 +2,25 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { motion } from "framer-motion";
 
-export default function PowerCard({ card, idSuffix = "", isSelected, onSelect }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+export default function PowerCard({
+  card,
+  idSuffix = "",
+  isSelected,
+  onSelect,
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
     id: card.id + idSuffix,
   });
 
   const style = {
-    maxWidth: "20%",
+    maxWidth: "200px",
     transition,
     transform: CSS.Transform.toString(transform),
     zIndex: isDragging || isSelected ? 1000 : undefined,
@@ -30,7 +42,7 @@ export default function PowerCard({ card, idSuffix = "", isSelected, onSelect })
         onClick={handleCardClick}
       >
         <svg
-          className="w-1/5 h-1/5 absolute top-0 right-2"
+          className="absolute right-2 top-0 h-1/5 w-1/5"
           viewBox="0 0 15 15 "
           textAnchor="middle"
           dominantBaseline="middle"
@@ -48,7 +60,12 @@ export default function PowerCard({ card, idSuffix = "", isSelected, onSelect })
           </text>
         </svg>
 
-        <svg className="w-2/3" viewBox="0 0 40 40" textAnchor="middle" dominantBaseline="middle">
+        <svg
+          className="w-2/3"
+          viewBox="0 0 40 40"
+          textAnchor="middle"
+          dominantBaseline="middle"
+        >
           <circle cx="50%" cy="50%" r="45%" fill="green" />
           <text
             x="50%"
@@ -65,7 +82,7 @@ export default function PowerCard({ card, idSuffix = "", isSelected, onSelect })
           {card.power.name}
           {card.power.oneTime && " (One Time)"}
         </p>
-        <div className=" w-5/6 h-1/4 px-4 bg-slate-200 rounded-md flex justify-center items-center text-center">
+        <div className="flex h-1/4 w-5/6 items-center justify-center rounded-md bg-slate-200 px-4 text-center">
           {/* <p className="text-xl">Note Card:</p> */}
           <p>{card.power.desc}</p>
         </div>

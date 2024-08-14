@@ -20,7 +20,7 @@ export default function CardNew({ card, idSuffix = "", isSelected, onSelect, sel
   const { pianoOnce, activeNotes, offset } = usePiano();
 
   const style = {
-    maxWidth: "20%",
+    maxWidth: "200px",
     transition,
     transform: CSS.Transform.toString(transform),
     zIndex: isDragging || isSelected ? 1000 : undefined,

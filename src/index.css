@@ -8,6 +8,8 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  font-size: clamp(8px, 1vw, 30px);
 }
 
 #root {
@@ -35,10 +37,14 @@ h1 {
   line-height: 1.1;
 }
 
+p {
+  font-size: 1rem;
+}
+
 button {
   border-radius: 8px;
   border: 2px solid skyblue;
-  padding: 0.6em 1.2em;
+  padding: 0.6rem 1.2rem;
   font-weight: 500;
   font-family: inherit;
   background-color: #bf81e9;
@@ -54,10 +60,6 @@ button:disabled {
   cursor: not-allowed;
   border: 2px solid gray;
   color: gray;
-}
-
-p {
-  font-size: clamp(0.1rem, 1rem, 2rem);
 }
 
 .card {
