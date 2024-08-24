@@ -4,7 +4,7 @@ import Modal from "./Modal";
 
 export default function Deck({ cards, discardPile, showModal, closeModal }) {
   if (!cards || !cards.length) {
-    return console.log("No cards left. Game Over!");
+    return window.alert("No cards left. Game Over!");
   }
 
   const orderedCards = [

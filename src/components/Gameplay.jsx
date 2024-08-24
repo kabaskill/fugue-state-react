@@ -141,6 +141,7 @@ export default function Gameplay() {
 
     if (energyCost > playerState.value.energy) {
       setSelectedCards([]);
+      window.alert("Don't have enough energy!");
       return;
     }
 
