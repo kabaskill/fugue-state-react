@@ -1,11 +1,23 @@
 import { useEffect, useCallback, useState } from "react";
 import * as Tone from "tone";
-import midiData from "../data/midiDataErl.json";
 import { usePiano } from "./PianoProvider.jsx";
 
+const midiFiles = import.meta.glob("../data/midiData/*.json");
+
 export default function MidiPlayer() {
-  const { piano, addActiveNote, removeActiveNote, releaseAllNotes } = usePiano();
+  const { piano, addActiveNote, removeActiveNote, releaseAllNotes } =
+    usePiano();
   const [isPlaying, setIsPlaying] = useState(false);
+  const [midiData, setMidiData] = useState(null);
+  const [selectedFile, setSelectedFile] = useState("Erlkönig");
+  const [availableFiles, setAvailableFiles] = useState([]);
+
+  useEffect(() => {
+    const files = Object.keys(midiFiles).map((filePath) =>
+      filePath.replace("../data/midiData/", "").replace(".json", ""),
+    );
+    setAvailableFiles(files);
+  }, []);
 
   const scheduleNote = useCallback(
     (note) => {
@@ -22,8 +34,19 @@ export default function MidiPlayer() {
         removeActiveNote(note.name);
       }, endTime);
     },
-    [piano, addActiveNote, removeActiveNote]
+    [piano, addActiveNote, removeActiveNote],
   );
+
+  useEffect(() => {
+    if (selectedFile) {
+      const filePath = `../data/midiData/${selectedFile}.json`;
+      if (midiFiles[filePath]) {
+        midiFiles[filePath]().then((data) => {
+          setMidiData(data.default);
+        });
+      }
+    }
+  }, [selectedFile]);
 
   useEffect(() => {
     if (midiData && midiData.tracks) {
@@ -39,7 +62,7 @@ export default function MidiPlayer() {
         Tone.getTransport().stop();
       };
     }
-  }, [scheduleNote]);
+  }, [midiData, scheduleNote]);
 
   const handlePlay = () => {
     Tone.getTransport().start();
@@ -58,7 +81,7 @@ export default function MidiPlayer() {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center">
+    <div className="flex flex-col items-center justify-center gap-4">
       <p>Midi Player</p>
       <div className="flex">
         <button onClick={handlePlay} disabled={isPlaying}>
@@ -69,6 +92,21 @@ export default function MidiPlayer() {
         </button>
         <button onClick={handleStop}>Stop</button>
       </div>
+
+      <label className="flex w-full justify-between">
+        Select a midi file:
+        <select
+          value={selectedFile}
+          onChange={(e) => setSelectedFile(e.target.value)}
+        >
+     
+          {availableFiles.map((file) => (
+            <option key={file} value={file}>
+              {file}
+            </option>
+          ))}
+        </select>
+      </label>
     </div>
   );
 }

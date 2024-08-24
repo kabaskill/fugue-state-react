@@ -448,7 +448,7 @@ export default function Gameplay() {
                   >
                     <option value="scientific">Scientific</option>
                     <option value="chromatic">Chromatic</option>
-                    <option value="do-re-mi">do-re-mi Notation</option>
+                    <option value="do-re-mi">do-re-mi</option>
                     {/* <option value="abc">ABC Notation</option> */}
                   </select>
                 </div>

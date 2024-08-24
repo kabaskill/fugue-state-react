@@ -11,7 +11,7 @@ export default function MainMenu() {
         <ChromaFlower />
       </div>
 
-      <div className="h-3/5 flex flex-col justify-between">
+      <div className="h-4/5 flex flex-col justify-between">
         <h1 className="text-6xl">Fugue State</h1>
 
         <div className="flex flex-col gap-4">
