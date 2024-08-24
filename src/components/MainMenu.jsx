@@ -7,7 +7,7 @@ export default function MainMenu() {
 
   return (
     <section className="w-4/5 h-2/3 m-auto flex justify-around items-center gap-16">
-      <div className="h-full aspect-square">
+      <div className="w-1/2 aspect-square">
         <ChromaFlower />
       </div>
 

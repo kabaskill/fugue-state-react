@@ -116,7 +116,6 @@ export default function Gameplay() {
     const newDeck = [...playerState.value.deck];
     const newBurnedCards = [...playerState.value.burnedCards];
 
-    let lastChord = "";
     let energyGain = 0;
 
     const energyCost = selectedCards.reduce((totalCost, cardId) => {
@@ -205,14 +204,8 @@ export default function Gameplay() {
       }
     });
 
-    lastChord = playedNotes.join("");
-
-    if (lastChord) {
-      const taskCheck = levelInfo.taskCheck.join("");
-      if (taskCheck.includes(lastChord)) {
-        energyGain += 1;
-      }
-    }
+    energyGain += compareArrays(playedNotes, levelInfo.taskCheck);
+    console.log("🚀  energyGain:", energyGain);
 
     playerState.value = {
       ...playerState.value,
@@ -228,6 +221,21 @@ export default function Gameplay() {
 
     setSelectedCards([]);
     drawNewCards();
+  }
+
+  function compareArrays(arr1, arr2) {
+    console.log(arr1);
+    console.log(arr2);
+
+    let sameCount = 0;
+
+    for (let i = 0; i < arr1.length; i++) {
+      if (arr1[i] === arr2[i]) {
+        sameCount++;
+      }
+    }
+
+    return sameCount;
   }
 
   function drawNewCards() {
@@ -395,7 +403,7 @@ export default function Gameplay() {
         {/*CARD CONTAINER*/}
         <div className="col-span-6 row-span-1 flex bg-slate-600">
           <div
-            className={`"} flex w-[15%] flex-col items-center justify-center gap-4`}
+            className={`flex w-[15%] flex-col items-center justify-center gap-4`}
           >
             <EnergyBar />
 

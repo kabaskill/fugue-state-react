@@ -65,8 +65,9 @@ button:disabled {
 .card {
   background-color: #b86cff;
   position: relative;
-  height: 100%;
-  /* aspect-ratio: 8/11; */
+  /* height: 100%; */
+
+  aspect-ratio: 8/11;
   display: flex;
   flex-direction: column;
   justify-content: space-around;

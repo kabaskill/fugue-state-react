@@ -9,6 +9,9 @@ export default {
         "card-bg": "url('/placeholders/old-paper.png')",
         "forest-bg": "url('/placeholders/forest.png')",
       },
+
+      //CREATE CUSTOM CLASSES FOR ELEMENTS
+
     },
   },
   plugins: [],

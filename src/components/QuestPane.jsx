@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { LazyLoadImage } from "react-lazy-load-image-component";
 import { levels } from "../data/levels";
 import { gameState, playerState } from "../data/gameState";
 import { motion } from "framer-motion";
@@ -182,7 +181,7 @@ export default function QuestPane() {
           </motion.div>
 
           <div className="w-1/3 h-full relative">
-            <LazyLoadImage
+            <img
               className="absolute bottom-0 right-0 w-full"
               src={`${import.meta.env.BASE_URL}placeholders/Fritz.png`}
               alt="characters"
