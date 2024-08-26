@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useCallback, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useCallback,
+  useState,
+} from "react";
 import * as Tone from "tone";
 import { Note } from "tonal";
 import { setupKeyboard } from "../utils/keyboard";
@@ -11,6 +17,7 @@ export function PianoProvider({ children }) {
   const [offset, setOffset] = useState(0);
 
   const [activeNotes, setActiveNotes] = useState([]);
+  const [activeParts, setActiveParts] = useState([]);
 
   useEffect(() => {
     const sampler = new Tone.Sampler({
@@ -70,7 +77,9 @@ export function PianoProvider({ children }) {
   }, []);
 
   const releaseNote = useCallback((note) => {
-    setActiveNotes((prev) => prev.filter((n) => n !== Note.midi(note)).sort((a, b) => a - b));
+    setActiveNotes((prev) =>
+      prev.filter((n) => n !== Note.midi(note)).sort((a, b) => a - b),
+    );
   }, []);
 
   const addActiveNote = useCallback((note) => {
@@ -112,7 +121,7 @@ export function PianoProvider({ children }) {
         playNote(fullNote);
       }
     },
-    [piano, offset]
+    [piano, offset],
   );
 
   const changeOffset = useCallback((delta) => {
@@ -127,6 +136,33 @@ export function PianoProvider({ children }) {
     return cleanup;
   }, [piano, playKey, changeOffset]);
 
+  // Function to play a sequence of notes
+  const playSequence = useCallback(
+    (sequence) => {
+      if (!piano) return;
+
+      // Create a Tone.Part for the sequence
+      const part = new Tone.Part((time, note) => {
+        piano.triggerAttackRelease(note.note, note.duration, time);
+      }, sequence).start();
+
+      setActiveParts((prevParts) => [...prevParts, part]);
+      return part;
+    },
+    [piano],
+  );
+
+  // Function to start all active parts
+  const startAllSequences = () => {
+    Tone.getTransport().start();
+  };
+
+  // Function to stop all active parts
+  const stopAllSequences = () => {
+    activeParts.forEach((part) => part.stop());
+    setActiveParts([]);
+  };
+
   return (
     <PianoContext.Provider
       value={{
@@ -138,6 +174,9 @@ export function PianoProvider({ children }) {
         offset,
         changeOffset,
         activeNotes,
+        playSequence,
+        startAllSequences,
+        stopAllSequences,
       }}
     >
       {children}

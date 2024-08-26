@@ -161,6 +161,11 @@ export default function Gameplay() {
 
             if (index === selectedCards.length - 1) {
               setPlayerTurnArray((prev) => [...prev, playedNotes]);
+              energyGain += compareArrays(
+                playerTurnArray,
+                levelInfo.taskChords,
+              );
+              console.log("🚀  energyGain:", energyGain);
             }
           } else if (card.type === "power") {
             if (card.power.name === "Undo Chord") {
@@ -205,9 +210,6 @@ export default function Gameplay() {
       }
     });
 
-    energyGain += compareArrays(playedNotes, levelInfo.taskCheck);
-    console.log("🚀  energyGain:", energyGain);
-
     playerState.value = {
       ...playerState.value,
       hand: [
@@ -231,8 +233,10 @@ export default function Gameplay() {
     let sameCount = 0;
 
     for (let i = 0; i < arr1.length; i++) {
-      if (arr1[i] === arr2[i]) {
-        sameCount++;
+      for (let j = 0; j < arr1[i].length; j++) {
+        if (arr1[i][j] === arr2[i][j]) {
+          sameCount++;
+        }
       }
     }
 
