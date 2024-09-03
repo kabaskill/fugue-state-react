@@ -126,6 +126,7 @@ export default function QuestPane() {
             <p className="flex flex-1 items-center justify-center px-12 py-12 text-center text-2xl">
               {level[current].dialog[dialogIndex]}
             </p>
+            
             {/* ARROW BUTTONS */}
             <div className="flex justify-between self-stretch p-4">
               <button

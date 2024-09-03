@@ -1,15 +1,7 @@
 import { effect, signal } from "@preact/signals-react";
 import { Range } from "tonal";
 import randomId from "../utils/randomId";
-
-// Utility Functions
-const shuffleArray = (array) => {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-};
+import shuffleArray from "../utils/shuffleArray";
 
 const mappedNotes = (startKey) => {
   const coloredNotesArray = Range.chromatic(["A3", "G#4"], {
@@ -156,7 +148,7 @@ const defaultOptionsState = {
   },
 };
 
-const initialDeck = noteDeck(defaultOptionsState.allNotes);
+const initialDeck = noteDeck();
 const initialPowerDeck = powerDeck();
 
 const drawInitialHand = (deck, powerDeck, handNotes, handPowers) => {
