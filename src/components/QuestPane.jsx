@@ -7,6 +7,7 @@ import ChromaFlower from "./ChromaFlower";
 import CardNew from "./CardNew";
 import SheetMusic from "./SheetMusic";
 import PowerCard from "./PowerCard";
+import { cn } from "../utils/cn";
 
 export default function QuestPane() {
   const [dialogIndex, setDialogindex] = useState(0);
@@ -21,7 +22,13 @@ export default function QuestPane() {
   const isNote = current === 0 && dialogIndex === 11;
 
   const card = { ...playerState.value.hand[0], id: "quest-card" };
-  const noteCard = { ...card, id: "quest-note-card", note: "A", octave: 4, color: "red" };
+  const noteCard = {
+    ...card,
+    id: "quest-note-card",
+    note: "A",
+    octave: 4,
+    color: "red",
+  };
   const power = playerState.value.deck.find((item) => item.type === "power");
 
   return (
@@ -34,7 +41,7 @@ export default function QuestPane() {
         showXButton={false}
         flexible
       >
-        <div className="size-full flex justify-end items-center relative">
+        <div className="relative flex size-full items-center justify-end">
           {/* TALKBOX */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -42,13 +49,14 @@ export default function QuestPane() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5, ease: "easeInOut" }}
             key={dialogIndex}
-            className="relative w-1/2 bg-slate-200  text-lg rounded-xl shadow-md flex flex-col justify-between items-center"
+            className="relative flex w-1/2 flex-col items-center justify-between rounded-xl bg-slate-200 text-lg shadow-md pt-4"
           >
-            <div className="absolute w-0 h-0 left-full top-3/4 border-transparent border-l-slate-200 border-l-[1.5rem] border-t-[1rem] border-b-[1rem] drop-shadow-xl"></div>
-
-            <p className="text-2xl flex-1 text-center flex items-center justify-center px-12 py-12">
-              {level[current].dialog[dialogIndex]}
-            </p>
+            <div
+              className={cn(
+                "absolute left-full top-3/4 h-0 w-0",
+                "border-b-[1rem] border-l-[1.5rem] border-t-[1rem] border-transparent border-l-slate-200 drop-shadow-xl",
+              )}
+            ></div>
 
             {/* CHROMA FLOWER */}
             {isChroma && (
@@ -75,8 +83,13 @@ export default function QuestPane() {
 
             {/* CARD */}
             {isCard && (
-              <ul className="w-4/5 h-2/5  flex justify-center items-center gap-6  py-8">
-                <CardNew card={card} key={card.id} isSelected={false} selectedIndex={0} />
+              <ul className="flex h-2/5 w-4/5 items-center justify-center gap-6 py-8">
+                <CardNew
+                  card={card}
+                  key={card.id}
+                  isSelected={false}
+                  selectedIndex={0}
+                />
 
                 {!isNote ? (
                   <PowerCard
@@ -87,7 +100,7 @@ export default function QuestPane() {
                 ) : (
                   <>
                     <svg
-                      className="w-16 h-16 "
+                      className="h-16 w-16"
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
                       fill="none"
@@ -110,13 +123,17 @@ export default function QuestPane() {
                 )}
               </ul>
             )}
-
+            <p className="flex flex-1 items-center justify-center px-12 py-12 text-center text-2xl">
+              {level[current].dialog[dialogIndex]}
+            </p>
             {/* ARROW BUTTONS */}
-            <div className="flex justify-between  self-stretch p-4">
+            <div className="flex justify-between self-stretch p-4">
               <button
                 disabled={dialogIndex === 0}
                 onClick={() =>
-                  dialogIndex === 0 ? setDialogindex(0) : setDialogindex(dialogIndex - 1)
+                  dialogIndex === 0
+                    ? setDialogindex(0)
+                    : setDialogindex(dialogIndex - 1)
                 }
               >
                 <svg
@@ -161,7 +178,7 @@ export default function QuestPane() {
             </div>
             <button
               onClick={() => setShowModal(false)}
-              className="z-50 absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full hover:bg-red-400"
+              className="absolute right-2 top-2 z-50 rounded-full bg-red-500 p-2 text-white hover:bg-red-400"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -180,7 +197,7 @@ export default function QuestPane() {
             </button>
           </motion.div>
 
-          <div className="w-1/3 h-full relative">
+          <div className="relative h-full w-1/3">
             <img
               className="absolute bottom-0 right-0 w-full"
               src={`${import.meta.env.BASE_URL}placeholders/Fritz.png`}

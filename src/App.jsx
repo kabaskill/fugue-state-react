@@ -30,9 +30,14 @@ export default function App() {
       >
         <div
           className={cn(
-            "flex h-full w-full flex-col items-center justify-around",
+            "flex h-full w-full flex-col items-center justify-between py-8",
           )}
         >
+          <img
+            src={`${import.meta.env.BASE_URL}/images/Keyboard.png`}
+            alt="keyboard"
+            className="w-4/5"
+          />
           <p className="w-3/5">
             Audio Engine needs to be loaded manually before you can start
             playing. Click the button to load the Audio Engine. You can also use
@@ -40,12 +45,6 @@ export default function App() {
             and white keys to play the notes. Yellow keys change the octave you
             are playing. Optimized for desktop resolutions.
           </p>
-
-          <img
-            src={`${import.meta.env.BASE_URL}/images/Keyboard.png`}
-            alt="keyboard"
-            className="w-4/5"
-          />
           <button onClick={handleLoadPianoProvider}>Start Audio Engine</button>
         </div>
       </Modal>
