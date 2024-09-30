@@ -12,7 +12,7 @@ Fugue State is a deck-builder game that aims to provide an immersive and interac
 ## Getting Started
 To get started with Fugue State, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/your-username/fugue-state.git`
+1. Clone the repository: `git clone https://github.com/kabaskill/fugue-state.git`
 2. Install dependencies: `npm install`
 3. Start the development server: `npm run dev`
 4. Open the game in your browser: `http://localhost:5173`
@@ -37,13 +37,13 @@ Contributions are welcome! If you'd like to contribute to Fugue State, please fo
 
 
 ## Acknowledgements
-- [Vite](https://vitejs.dev/) for their fast development server.
-- [React](https://reactjs.org/) for their JavaScript library.
-- [Tonal.js](https://github.com/tonaljs/tonal) for their music theory library.
-- [Tone.js](https://github.com/Tonejs/Tone.js) for their audio synthesis library.
-- [abc.js](https://github.com/paulrosen/abcjs) for their sheet music rendering library.
-- [react-dnd-kit](https://github.com/react-dnd/react-dnd-kit) for their drag-and-drop library.
-- [Preact Signals](https://github.com/preactjs/preact-signals) for their state management library.
-- [framer-motion](https://github.com/framer/motion) for their animation library.
-- [Tailwind CSS](https://tailwindcss.com/) for their utility-first CSS framework.
+- [Vite](https://vitejs.dev/) for fast development server.
+- [React](https://reactjs.org/) for JavaScript library.
+- [Tonal.js](https://github.com/tonaljs/tonal) for music theory library.
+- [Tone.js](https://github.com/Tonejs/Tone.js) for audio synthesis library.
+- [abc.js](https://github.com/paulrosen/abcjs) for sheet music rendering library.
+- [react-dnd-kit](https://github.com/react-dnd/react-dnd-kit) for drag-and-drop library.
+- [Preact Signals](https://github.com/preactjs/preact-signals) for state management library.
+- [framer-motion](https://github.com/framer/motion) for animation library.
+- [Tailwind CSS](https://tailwindcss.com/) for CSS framework.
 
