@@ -3,13 +3,14 @@ import { optionsState } from "../data/gameState";
 import { Chord, Note, Range } from "tonal";
 import { usePiano } from "./PianoProvider";
 
-export default function ChromaFlower() {
-  const size = 400;
-  const pad = 80;
+export default function ChromaFlower({ size = 400 }) {
+  const pad = size / 5;
 
   const notes = optionsState.value.allNotes;
   const rootNote = optionsState.value.rootNote;
-  const notesToPlay = Range.chromatic([rootNote + 3, rootNote + 4], { sharps: true }).slice(0, -1);
+  const notesToPlay = Range.chromatic([rootNote + 3, rootNote + 4], {
+    sharps: true,
+  }).slice(0, -1);
 
   const { activeNotes, pianoOnce, offset, changeOffset } = usePiano();
   const activeNoteNames = activeNotes.map((note) => Note.fromMidiSharps(note));
@@ -33,24 +34,30 @@ export default function ChromaFlower() {
   function handlePetalClick(index) {
     const noteToPlay = notesToPlay[index];
 
-   pianoOnce(noteToPlay, 0.5);
+    pianoOnce(noteToPlay, 0.5);
   }
 
   return (
-    <div className="flex flex-col size-full">
+    <div className="size-full flex flex-col">
       <svg
         viewBox={`${-pad} ${-pad} ${size + 2 * pad} ${size + 2 * pad}`}
         xmlns="http://www.w3.org/2000/svg"
         textAnchor="middle"
         dominantBaseline="middle"
       >
-        <text x={size / 2} y={size / 2} style={{ fontSize: "1.2rem" }} fill="white">
+        <text
+          x={size / 2}
+          y={size / 2}
+          style={{ fontSize: "1.2rem" }}
+          fill="white"
+        >
           {Chord.detect(activeNoteNames)[0]}
         </text>
         <g transform={`translate(${svgCenterX}, ${svgCenterY}) `}>
           {Object.keys(notes).map((note, index) => {
             const isPlaying = activeNotes.find(
-              (playingNote) => Note.pitchClass(Note.fromMidiSharps(playingNote)) === note
+              (playingNote) =>
+                Note.pitchClass(Note.fromMidiSharps(playingNote)) === note,
             );
 
             const octave = +Note.fromMidi(isPlaying).slice(-1);
@@ -65,11 +72,18 @@ export default function ChromaFlower() {
                   opacity: isPlaying ? "1" : "0.35",
                 }}
               >
-                <g transform={` rotate(${index * 30}) translate(0, -${size / 8}) `}>
-                  <path d={generateDAttribute(size)} fill={note.length > 1 ? "#222" : "#eee"} />
+                <g
+                  transform={` rotate(${index * 30}) translate(0, -${size / 8}) `}
+                >
+                  <path
+                    d={generateDAttribute(size)}
+                    fill={note.length > 1 ? "#222" : "#eee"}
+                  />
                 </g>
 
-                <g transform={`rotate(${index * 30}) translate(0, -${size / 2 + pad / 6}) `}>
+                <g
+                  transform={`rotate(${index * 30}) translate(0, -${size / 2 + pad / 6}) `}
+                >
                   <circle cx="0" cy="0" r={size / 10} fill={notes[note]} />
                   <text
                     x="0"
@@ -85,8 +99,8 @@ export default function ChromaFlower() {
                     {optionsState.value.notation === "chromatic"
                       ? index
                       : optionsState.value.notation === "do-re-mi"
-                      ? optionsState.value.doremiObject[note]
-                      : note}
+                        ? optionsState.value.doremiObject[note]
+                        : note}
                   </text>
                   {isPlaying && (
                     <text
@@ -103,20 +117,24 @@ export default function ChromaFlower() {
                       {octave}
                     </text>
                   )}
-                  {isPlaying && <circle cx="0" cy={pad} r={size / 40} fill={notes[note]} />}
+                  {isPlaying && (
+                    <circle cx="0" cy={pad} r={size / 40} fill={notes[note]} />
+                  )}
                 </g>
               </g>
             );
           })}
         </g>
       </svg>
-      <div className="flex justify-around items-center w-full mb-2">
+
+      {/* TRANSPOSE SECTION */}
+      <div className="mb-2 flex w-full items-center justify-around">
         <button
           onClick={(event) => {
             event.stopPropagation();
             changeOffset(-1);
           }}
-          className="z-50  p-1 bg-blue-600 text-white rounded-full hover:bg-blue-400"
+          className="z-50 rounded-full bg-blue-600 p-1 text-white hover:bg-blue-400"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -125,18 +143,23 @@ export default function ChromaFlower() {
             viewBox="0 0 24 24"
             stroke="currentColor"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 12H5" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 12H5"
+            />
           </svg>
         </button>
 
-        <p className="text-3xl text-white">Transpose Octave: {offset}</p>
+        <p className="text-white">Transpose Octave: {offset}</p>
 
         <button
           onClick={(event) => {
             event.stopPropagation();
             changeOffset(1);
           }}
-          className="z-50  p-1 bg-blue-600 text-white rounded-full hover:bg-blue-400 "
+          className="z-50 rounded-full bg-blue-600 p-1 text-white hover:bg-blue-400"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -145,7 +168,12 @@ export default function ChromaFlower() {
             viewBox="0 0 24 24"
             stroke="currentColor"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 4v16m8-8H4"
+            />
           </svg>
         </button>
       </div>

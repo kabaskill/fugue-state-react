@@ -141,7 +141,6 @@ export function PianoProvider({ children }) {
     (sequence) => {
       if (!piano) return;
 
-      // Create a Tone.Part for the sequence
       const part = new Tone.Part((time, note) => {
         piano.triggerAttackRelease(note.note, note.duration, time);
       }, sequence).start();
@@ -152,12 +151,10 @@ export function PianoProvider({ children }) {
     [piano],
   );
 
-  // Function to start all active parts
   const startAllSequences = () => {
     Tone.getTransport().start();
   };
 
-  // Function to stop all active parts
   const stopAllSequences = () => {
     activeParts.forEach((part) => part.stop());
     setActiveParts([]);

@@ -31,11 +31,10 @@ const mappedNotes = (startKey) => {
 const coloredNotes = mappedNotes("A");
 
 //CARD and DECK DATA
-
 const card = (note = "", octave = "", cost = 1, unlocked = true) => ({
   id: randomId("note-card"),
   type: "note",
-  unlocked,
+  unlocked: unlocked,
   note: note,
   octave: octave,
   color: coloredNotes[note],
@@ -53,7 +52,7 @@ const noteDeck = () => {
 const powerCard = (powerName, powerObject, unlocked = true) => ({
   id: randomId("power"),
   type: "power",
-  unlocked,
+  unlocked: unlocked,
   power: {
     name: powerName,
     effect: powerObject.effect,
@@ -203,45 +202,8 @@ let rootNoteCache = optionsState.peek().rootNote;
 effect(() => {
   const newRootNote = optionsState.value.rootNote;
   if (rootNoteCache !== newRootNote) {
-    const oldRootNote = rootNoteCache;
-
     const allNotes = mappedNotes(newRootNote);
     optionsState.value.allNotes = allNotes;
-
-    const oldNotes = mappedNotes(oldRootNote);
-
-    const remapNote = (oldNote) => {
-      const oldIndex = Object.keys(oldNotes).findIndex(
-        (item) => item === oldNote,
-      );
-      return Object.keys(allNotes)[oldIndex];
-    };
-
-    playerState.value = {
-      ...playerState.value,
-      hand: playerState.value.hand.map((card) => {
-        if (card.type === "note") {
-          const newNote = remapNote(card.note);
-          return {
-            ...card,
-            note: newNote,
-            color: allNotes[newNote],
-          };
-        }
-        return card;
-      }),
-      deck: playerState.value.deck.map((card) => {
-        if (card.type === "note") {
-          const newNote = remapNote(card.note);
-          return {
-            ...card,
-            note: newNote,
-            color: allNotes[newNote],
-          };
-        }
-        return card;
-      }),
-    };
 
     rootNoteCache = newRootNote;
   }

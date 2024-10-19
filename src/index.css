@@ -9,17 +9,17 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  font-size: clamp(8px, 16px, 24px);
+  font-size: calc(8px + 1.5vw);
 }
 
 #root {
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
 }
 
 body {
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   background-color: rgb(110, 106, 139);
 }
 
@@ -35,10 +35,6 @@ a:hover {
 h1 {
   font-size: 3.2rem;
   line-height: 1.1;
-}
-
-p {
-  font-size: 1rem;
 }
 
 button {
