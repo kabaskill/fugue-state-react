@@ -9,6 +9,7 @@ import Modal from "./components/Modal";
 import Cutscene from "./components/Cutscene";
 
 import { gameState, pianoProviderLoaded } from "./data/gameState";
+import Button from "./components/Button";
 
 const Gameplay = React.lazy(() => import("./components/Gameplay"));
 const MainMenu = React.lazy(() => import("./components/MainMenu"));
@@ -37,7 +38,7 @@ export default function App() {
             Audio Engine needs to be loaded manually before you can start
             playing. Optimized for desktop resolutions.
           </p>
-          <button onClick={handleLoadPianoProvider}>Start Audio Engine</button>
+          <Button onClick={handleLoadPianoProvider}>Start Audio Engine</Button>
         </div>
       </Modal>
 

@@ -3,6 +3,7 @@ import abcjs from "abcjs";
 import { usePiano } from "./PianoProvider";
 import { gameState } from "../data/gameState";
 import { levels } from "../data/levels";
+import Button from "./Button";
 
 export default function SheetMusic({
   id,
@@ -47,12 +48,12 @@ export default function SheetMusic({
     <>
       <div id={id}></div>
       {isTask && (
-        <button
+        <Button
           onClick={() => handlePlay(levelInfo.taskChords)}
           className="absolute bottom-2 right-2 w-1/6"
         >
           Play Notes
-        </button>
+        </Button>
       )}
     </>
   );

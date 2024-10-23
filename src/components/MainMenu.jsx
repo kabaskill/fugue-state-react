@@ -1,4 +1,5 @@
 import { gameState, optionsState } from "../data/gameState";
+import Button from "./Button";
 import ChromaFlower from "./ChromaFlower";
 import MidiPlayer from "./MidiPlayer";
 // import { usePiano } from "./PianoProvider";
@@ -40,7 +41,7 @@ export default function MainMenu() {
       <div className="flex h-full w-1/2 flex-col justify-around border-2 border-red-100">
         <h1>Fugue State</h1>
 
-        <button
+        <Button
           onClick={() => {
             gameState.value = {
               ...gameState.value,
@@ -49,14 +50,14 @@ export default function MainMenu() {
           }}
         >
           Play
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() =>
             (optionsState.value = { ...optionsState.value, isActive: true })
           }
         >
           Options
-        </button>
+        </Button>
 
         <MidiPlayer />
       </div>

@@ -27,8 +27,8 @@ import { gameState, optionsState, playerState } from "../data/gameState";
 import randomId from "../utils/randomId";
 import { levels } from "../data/levels";
 import { AbcNotation, Note } from "tonal";
-import { motion } from "framer-motion";
 import EnergyBar from "./EnergyBar";
+import Button from "./Button";
 
 export default function Gameplay() {
   const sensors = useSensors(
@@ -336,7 +336,7 @@ export default function Gameplay() {
         <QuestPane />
 
         {taskFinished && (
-          <button
+          <Button
             className="absolute left-1/2 top-1/2 z-50 h-1/4 w-2/5 -translate-x-1/2 -translate-y-1/2 transform text-2xl"
             onClick={() =>
               (gameState.value = {
@@ -348,20 +348,18 @@ export default function Gameplay() {
             }
           >
             GO TO NEXT LEVEL
-          </button>
+          </Button>
         )}
 
         <div className="absolute right-4 top-4 z-10 flex justify-end gap-2">
-          <button
+          <Button
             onClick={() =>
               (optionsState.value = { ...optionsState.value, isActive: true })
             }
           >
             Options
-          </button>
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
+          </Button>
+          <Button
             onClick={() => {
               gameState.value = {
                 ...gameState.value,
@@ -370,7 +368,7 @@ export default function Gameplay() {
             }}
           >
             Main Menu
-          </motion.button>
+          </Button>
         </div>
 
         <div className="col-span-6 row-span-2 flex">
@@ -495,28 +493,28 @@ export default function Gameplay() {
           </SortableContext>
 
           <div className="grid w-[20%] grid-flow-col grid-cols-2 grid-rows-2 place-items-center gap-4 px-4 py-8">
-            <button
+            <Button
               className="size-4/5"
               onClick={() => handleTurn("play")}
               disabled={selectedCards.length === 0}
             >
               Play
-            </button>
-            <button
+            </Button>
+            <Button
               className="size-4/5"
               onClick={() => handleTurn("discard")}
               disabled={selectedCards.length === 0}
             >
               Discard
-            </button>
-            <button
+            </Button>
+            <Button
               className="row-span-2 size-full self-center"
               onClick={() => setIsDeckOpen(true)}
             >
               Show <br />
               Deck:
               {playerState.value.deck.length}
-            </button>
+            </Button>
           </div>
         </div>
       </div>

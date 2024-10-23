@@ -2,6 +2,7 @@ import { useState } from "react";
 import { cutscenes } from "../data/cutscenes";
 import { gameState } from "../data/gameState";
 import Modal from "./Modal";
+import Button from "./Button";
 
 export default function Cutscene(
   isCutscene = gameState.value.currentScene === "cutscene",
@@ -56,7 +57,7 @@ export default function Cutscene(
         <div className="absolute bottom-4 left-[25%] flex w-[50%] justify-around">
           {isEnded && (
             <>
-              <button
+              <Button
                 disabled={dialogIndex === 0}
                 onClick={() =>
                   setDialogIndex(dialogIndex === 0 ? 0 : dialogIndex - 1)
@@ -76,8 +77,8 @@ export default function Cutscene(
                     d="M15 19l-7-7 7-7"
                   />
                 </svg>
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => {
                   if (
                     gameState.value.currentCutscene ===
@@ -93,10 +94,10 @@ export default function Cutscene(
                 }}
               >
                 GO!
-              </button>
+              </Button>
             </>
           )}
-          <button
+          <Button
             disabled={dialogIndex === scene.dialog.length - 1}
             onClick={() =>
               setDialogIndex(
@@ -120,7 +121,7 @@ export default function Cutscene(
                 d="M9 5l7 7-7 7"
               />
             </svg>
-          </button>
+          </Button>
         </div>
       </div>
     </Modal>

@@ -1,6 +1,7 @@
 import { useEffect, useCallback, useState } from "react";
 import * as Tone from "tone";
 import { usePiano } from "./PianoProvider.jsx";
+import Button from "./Button.jsx";
 
 const midiFiles = import.meta.glob("../data/midiData/*.json");
 
@@ -83,14 +84,14 @@ export default function MidiPlayer() {
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       <p>Midi Player</p>
-      <div className="flex">
-        <button onClick={handlePlay} disabled={isPlaying}>
+      <div className="flex gap-2">
+        <Button onClick={handlePlay} disabled={isPlaying}>
           Play
-        </button>
-        <button onClick={handlePause} disabled={!isPlaying}>
+        </Button>
+        <Button onClick={handlePause} disabled={!isPlaying}>
           Pause
-        </button>
-        <button onClick={handleStop}>Stop</button>
+        </Button>
+        <Button onClick={handleStop}>Stop</Button>
       </div>
 
       <label className="flex w-full justify-between">
@@ -99,7 +100,6 @@ export default function MidiPlayer() {
           value={selectedFile}
           onChange={(e) => setSelectedFile(e.target.value)}
         >
-     
           {availableFiles.map((file) => (
             <option key={file} value={file}>
               {file}

@@ -8,6 +8,7 @@ import CardNew from "./CardNew";
 import SheetMusic from "./SheetMusic";
 import PowerCard from "./PowerCard";
 import { cn } from "../utils/cn";
+import Button from "./Button";
 
 export default function QuestPane() {
   const [dialogIndex, setDialogindex] = useState(0);
@@ -49,7 +50,7 @@ export default function QuestPane() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5, ease: "easeInOut" }}
             key={dialogIndex}
-            className="relative flex w-1/2 flex-col items-center justify-between rounded-xl bg-slate-200 text-lg shadow-md pt-4"
+            className="relative flex w-1/2 flex-col items-center justify-between rounded-xl bg-slate-200 pt-4 text-lg shadow-md"
           >
             <div
               className={cn(
@@ -126,10 +127,10 @@ export default function QuestPane() {
             <p className="flex flex-1 items-center justify-center px-12 py-12 text-center text-2xl">
               {level[current].dialog[dialogIndex]}
             </p>
-            
+
             {/* ARROW BUTTONS */}
             <div className="flex justify-between self-stretch p-4">
-              <button
+              <Button
                 disabled={dialogIndex === 0}
                 onClick={() =>
                   dialogIndex === 0
@@ -151,9 +152,9 @@ export default function QuestPane() {
                     d="M15 19l-7-7 7-7"
                   />
                 </svg>
-              </button>
+              </Button>
 
-              <button
+              <Button
                 disabled={dialogIndex === level[current].dialog.length - 1}
                 onClick={() =>
                   dialogIndex === level[current].dialog.length - 1
@@ -175,7 +176,7 @@ export default function QuestPane() {
                     d="M9 5l7 7-7 7"
                   />
                 </svg>
-              </button>
+              </Button>
             </div>
             <button
               onClick={() => setShowModal(false)}

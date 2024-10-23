@@ -9,7 +9,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  font-size: calc(8px + 1.5vw);
+  font-size: calc(8px + 0.5vw);
 }
 
 #root {
@@ -35,27 +35,6 @@ a:hover {
 h1 {
   font-size: 3.2rem;
   line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 2px solid skyblue;
-  padding: 0.6rem 1.2rem;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #bf81e9;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #b86cff;
-}
-
-button:disabled {
-  background-color: rgb(207, 197, 207);
-  cursor: not-allowed;
-  border: 2px solid gray;
-  color: gray;
 }
 
 .card {
